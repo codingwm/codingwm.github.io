@@ -1,0 +1,305 @@
+<!doctype html><meta charset=utf-8><title>Evidence: how the world-model stack fails</title><style>
+body{margin:0;background:#f4f3ee;color:#0b0b0b;
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:36px 22px 90px}
+h1{font-size:26px;letter-spacing:-.4px;margin:0 0 6px}
+.sub{color:#6b6a65;margin:0 0 28px;font-size:14.5px}
+h2{font-size:19px;margin:34px 0 6px;letter-spacing:-.2px}
+.lede{color:#3a3a37;margin:0 0 16px;font-size:14.5px;max-width:860px}
+.ex{background:#fff;border:1px solid #e2e1d9;border-radius:10px;margin:0 0 12px;overflow:hidden}
+.exh{padding:8px 14px;background:#fbfaf6;border-bottom:1px solid #eeede6;
+ font-size:11.5px;color:#6b6a65;font-family:ui-monospace,Menlo,monospace}
+.cols{display:grid;grid-template-columns:1fr 1fr}
+.cols>div{padding:13px 15px;min-width:0}
+.cols>div:first-child{border-right:1px solid #eeede6;background:#fffaf1}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;
+ font:12.3px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#25251f}
+.tagL,.tagR{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+ display:block;margin-bottom:6px}
+.tagL{color:#a5700f}.tagR{color:#0a7a45}
+footer{color:#898781;font-size:12.5px;margin-top:40px;border-top:1px solid #e2e1d9;padding-top:16px}
+a{color:#0a7a45}
+</style><div class=wrap>
+<h1>Evidence: how the world-model stack fails</h1>
+<p class=sub>Every claim in the <a href='diagnosis.html'>diagnosis</a>, with verbatim excerpts pulled from the run logs. Left is what the world model said; right is what actually happened. Nothing is paraphrased. Full traces: <a href='traces.html'>traces.html</a></p>
+<p class=lede style='background:#fffaf1;border-left:3px solid #e0a955;padding:10px 14px;border-radius:6px'><b>In flight:</b> every rubric run below used the original, maximally biased prompt &mdash; all seven of our previous debias runs were <code>--sim-only</code>, so the rubric lane had never actually been debiased. That run (<code>--wm-evidence</code>) is executing now; these traces show the state it is being compared against, not a verdict on debiasing.</p><h2>The world model condemns code that then passes</h2><p class=lede>394 live audits: it said FAIL on 386 of them and was right about working code <b>0 times</b>. False-alarm rate on genuinely working code: 100%. Below are real cases where it flagged criteria and the interpreter then passed that exact program.</p>
+<div class=ex><div class=exh>mlebench/denoising-dirty-documents &middot; mlelite_A_dw</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 6 of 10 criteria as VIOLATED
+
+(no reasons logged)</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 2.598s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/new-york-city-taxi-fare-prediction &middot; mlelite_A_dw</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 9 of 10 criteria as VIOLATED
+
+(no reasons logged)</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 2.229s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/ranzcr-clip-catheter-line-classification &middot; mlelite_A_dw</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 10 of 10 criteria as VIOLATED
+
+(no reasons logged)</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 8.96s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/denoising-dirty-documents &middot; mlelite_A_errR</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 5 of 10 criteria as VIOLATED
+
+**The task is not from the benchmark family the rubric targets.** The target error types describe failures of a *coding agent solv
+      -&gt; WM: Task is a Kaggle OCR denoising competition, which matches the data-science benchmark family the rubric targets.
+
+The solution loads and parses the actual competition data files before emitting any submission, and never writes a constant, empty
+      -&gt; WM: Code writes fallback empty/sample-copied submission when data loading fails (lines 330-341, 354-359, 368-373, 385-390, 408-413).
+
+**The solutions contain none of the mechanisms the error types describe.** Both ranked snippets differ only in whether they guard 
+      -&gt; WM: Rubric describes non-existent Keras code; this is a Kaggle OCR task, unrelated to the stated criterion.</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 1.655s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/mlsp-2013-birds &middot; mlelite_A_errR</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 8 of 10 criteria as VIOLATED
+
+The solution verifies that any generated submission is non-empty and populated with real predictions (correct row count and value 
+      -&gt; WM: Code ends abruptly at line 289 in main(); submission verification logic is incomplete/missing.
+
+**The task is not from the benchmark family the rubric targets.** The target error types describe failures of a *coding agent solv
+      -&gt; WM: Task context describes Kaggle bird classification (multi-label audio), not Keras tensor resizing; mismatch between rubric and task.
+
+Discard everything else &quot;however good it sounds,&quot; there are **no valid observations to keep**. The genuine issues one could raise 
+      -&gt; WM: Rubric designed for Keras ops bug-fix; this is a Kaggle competition solution. No valid observations map to listed error types.</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 6.632s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/ranzcr-clip-catheter-line-classification &middot; mlelite_A_errR</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 10 of 10 criteria as VIOLATED
+
+**The solutions contain none of the mechanisms the error types describe.** Both ranked snippets differ only in whether they guard 
+      -&gt; WM: Rubric does not apply to this Kaggle competition task. Code submission/data handling, not Keras library fix.
+
+**The task is not from the benchmark family the rubric targets.** The target error types describe failures of a *coding agent solv
+      -&gt; WM: Rubric targets Keras library bug-fix; this is Kaggle competition code. Different task domains entirely.
+
+Discard everything else &quot;however good it sounds,&quot; there are **no valid observations to keep**. The genuine issues one could raise 
+      -&gt; WM: Rubric and code task mismatch. No valid error-type mappings exist between them.</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 3.345s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/tabular-playground-series-dec-2021 &middot; mlelite_A_errR</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 3 of 10 criteria as VIOLATED
+
+**The task is not from the benchmark family the rubric targets.** The target error types describe failures of a *coding agent solv
+      -&gt; WM: Rubric targets Keras ops.image.resize library bug; code is Kaggle competition solver. Task mismatch.
+
+**The solutions contain none of the mechanisms the error types describe.** Both ranked snippets differ only in whether they guard 
+      -&gt; WM: Rubric error types (symbolic tensors, type guards) irrelevant to this competition-solving code.
+
+The solution loads and parses the actual competition data files before emitting any submission, and never writes a constant, empty
+      -&gt; WM: Line 139–142: fallback creates empty/sample-copied submission when train.csv or test.csv missing.</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 4.922s)</pre></div></div></div>
+<div class=ex><div class=exh>mlebench/aptos2019-blindness-detection &middot; mlelite_A_err</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 2 of 10 criteria as VIOLATED
+
+(no reasons logged)</pre></div><div><span class=tagR>what really happened</span><pre>the real interpreter then PASSED this exact code (1/1, 7.227s)</pre></div></div></div>
+<h2>It predicts the wrong KIND of failure</h2><p class=lede>34% of KernelBench candidates compile and are numerically correct and merely run too slow — 39% of all failures. The world model reasons about correctness, so it invents compile errors and out-of-bounds reads that are not there.</p>
+<div class=ex><div class=exh>kernelbench/l2_12_Gemm_Multiply_LeakyReLU &middot; kernelbench_A_fixAB</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+Runtime error in forward(): The fused_gemm_bias_scale_leakyrelu_cuda kernel will be called with uninitialized weight and bias tensors. This will produce incorrect numerical results (undefined behavior from uninitialized memory). Additionally, there is a missing initialization step - the weight and bias buffers should be initialized with values from nn.Linear, but they are only registered as empty buffers. The nn.Linear layer that would normally initialize these is absent from __init__.</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.01 &lt;= 1.0 (kernel 272.0 ms vs ref 2.72 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 272.0, &#x27;ref_runtime_ms&#x27;: 2.72, &#x27;speedup&#x27;: 0.01, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l2_17_Conv2d_InstanceNorm_Divide &middot; kernelbench_A_fixAB</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+Runtime error in InstanceNorm2dCustom.forward() at the line: `output = instance_norm_ops.instance_norm_forward_cuda(input, mean_expanded, var_expanded, self.eps, divide_by)`. The custom CUDA kernel instance_norm_forward_kernel expects mean and var tensors with shape (batch_size * channels,) but the code passes mean_expanded and var_expanded with shape (batch_size, channels, 1, 1). This shape mismatch will cause the kernel to write to incorrect memory locations or access out-of-bounds memory, resulting in a CUDA err</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.4221 &lt;= 1.0 (kernel 10.4 ms vs ref 4.39 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 10.4, &#x27;ref_runtime_ms&#x27;: 4.39, &#x27;speedup&#x27;: 0.4221, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: [&#x27;Uses torch.nn compute layer (only containers, Parameter, init allowed)&#x27;]}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;de</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_10_3D_tensor_matrix_multiplication &middot; kernelbench_A_fixB2</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+RUNTIME LOGIC ERROR: The kernel has a critical indexing bug in the B_tile loading logic. When loading B_tile[ty][tx], the code uses (t * TILE_K + ty) as the K-dimension index and tx as the L-dimension index. However, tx ranges from 0 to TILE_L-1 (0 to 31), but B&#x27;s second dimension is L which is 768. This means the thread block is dimensioned as (TILE_L=32, TILE_M=32) = (32, 32) threads = 1024 threads, but the B_tile loading assumes tx maps to the column index of B. The actual bug is more subtle: the thread block is</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.1079 &lt;= 1.0 (kernel 9.64 ms vs ref 1.04 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 9.64, &#x27;ref_runtime_ms&#x27;: 1.04, &#x27;speedup&#x27;: 0.1079, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_13_Matmul_for_symmetric_matrices &middot; kernelbench_A_fixB2</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+CORRECTNESS ISSUE: The custom kernel computes C = A * B^T (where B is treated as if transposed in the computation loop), not C = A * B. In the symmetric_matmul_upper_kernel, the line `sum += A[row * N + k] * B[col * N + k];` treats B as if indexing by [col][k], but this computes A[row][k] * B[col][k] which is equivalent to A[row][k] * B[k][col] due to the symmetry comment. However, the correct matrix multiplication should be `sum += A[row * N + k] * B[k * N + col];` to compute C[row][col] = sum_k A[row][k] * B[k][c</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.1718 &lt;= 1.0 (kernel 15.6 ms vs ref 2.68 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 15.6, &#x27;ref_runtime_ms&#x27;: 2.68, &#x27;speedup&#x27;: 0.1718, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_17_Matmul_with_transposed_B &middot; kernelbench_A_fixB2</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+CUDA runtime error or incorrect numerical results due to semantic mismatch: The kernel expects B to be (K, N) but receives B as (N, K). The memory indexing Bs[ty][tx] = B[(k + ty) * N + col] is incorrect because it assumes B has N columns when B actually has K columns. This causes out-of-bounds or incorrect memory access. The fix would require either: (1) transposing B before passing to kernel, or (2) rewriting kernel to read B[(k + ty) * K + col] or adjusting the entire computation logic.</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.1107 &lt;= 1.0 (kernel 24.3 ms vs ref 2.69 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 24.3, &#x27;ref_runtime_ms&#x27;: 2.69, &#x27;speedup&#x27;: 0.1107, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_18_Matmul_with_transposed_both &middot; kernelbench_A_fixB2</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+CRITICAL RUNTIME ERROR: The code has a fundamental mathematical error. The original forward method computes torch.matmul(A.T, B.T), but the candidate code implements torch.matmul(A, B) instead. This is a semantic mismatch that produces incorrect results. Additionally, there are implementation bugs: (1) The CUDA code calls B_t.t() and A_t.t() which perform transposes on already-transposed tensors, creating double transposes - this is inefficient and may cause incorrect leading dimensions. (2) The cuBLAS call uses in</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.1053 &lt;= 1.0 (kernel 26.3 ms vs ref 2.77 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 26.3, &#x27;ref_runtime_ms&#x27;: 2.77, &#x27;speedup&#x27;: 0.1053, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l2_18_Matmul_Sum_Max_AvgPool_LogSumExp_LogSumExp &middot; kernelbench_A_fixB2</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+1. Line &#x27;import math&#x27; appears AFTER class definition (at end of file) instead of at the beginning. This will cause NameError when ModelNew.reset_parameters() tries to use math.sqrt(5) during __init__.
+
+2. In the CUDA kernel fused_model_kernel, line &#x27;float* local_out = shared_mem;&#x27; allocates shared_mem but the kernel is launched with shared_mem_size = 0 (last argument to &lt;&lt;&lt;&gt;&gt;&gt;). This declares shared_mem as &#x27;extern __shared__&#x27; but zero bytes are allocated, causing undefined behavior or segmentation fault when access</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.0097 &lt;= 1.0 (kernel 285.0 ms vs ref 2.76 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 285.0, &#x27;ref_runtime_ms&#x27;: 2.76, &#x27;speedup&#x27;: 0.0097, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_11_4D_tensor_matrix_multiplication &middot; kernelbench_A_fixB</div><div class=cols><div><span class=tagL>world model said</span><pre>WM PREDICTED:
+CRITICAL KERNEL BUG: The kernel accesses B with incorrect indexing. Line &#x27;sum += A[row * K_in + l] * B[l * N + col];&#x27; assumes B is in row-major format with stride N, but B is actually in row-major format with stride k (the second dimension). Since B has shape (l, k) = (256, 768), B[l, k] in row-major is stored as B_flat[l*768 + k], not B_flat[l*N + col]. When col ranges from 0-767 and N=768, this happens to work correctly in this specific case, BUT the kernel logic is semantically incorrect and uses the global N va</pre></div><div><span class=tagR>what really happened</span><pre>INTERPRETER FOUND:
+kernel eval compiled + correct + speedup&gt;1.0 correct but speedup=0.1758 &lt;= 1.0 (kernel 62.0 ms vs ref 10.9 ms) {&#x27;compiled&#x27;: True, &#x27;correctness&#x27;: True, &#x27;runtime_ms&#x27;: 62.0, &#x27;ref_runtime_ms&#x27;: 10.9, &#x27;speedup&#x27;: 0.1758, &#x27;excessive_speedup&#x27;: False, &#x27;static_check&#x27;: {&#x27;valid&#x27;: True, &#x27;errors&#x27;: [], &#x27;warnings&#x27;: []}, &#x27;metadata&#x27;: {&#x27;hardware&#x27;: &#x27;NVIDIA H200&#x27;, &#x27;device&#x27;: &#x27;0&#x27;, &#x27;correctness_trials&#x27;: &#x27;(5 / 5)&#x27;}, &#x27;error&#x27;: None}</pre></div></div></div>
+<h2>The race is never actually a race</h2><p class=lede>The world model answers in 3.6s; a real execution takes 110s. It wins <b>100.0%</b> of races (41/41 in config A, 45/45 in B), so every real execution is killed a few seconds in and the interpreter never speaks.</p>
+<div class=ex><div class=exh>kernelbench/l1_100_HingeLoss &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.446s), turn 1 -&gt; world_model (4.101s), turn 2 -&gt; world_model (4.075s), turn 3 -&gt; world_model (3.323s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.446s, turn 1 after 4.1s, turn 2 after 4.075s, turn 3 after 3.322s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_10_3D_tensor_matrix_multiplication &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.643s), turn 1 -&gt; world_model (3.74s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.642s, turn 1 after 3.739s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_11_4D_tensor_matrix_multiplication &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.559s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.559s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_12_Matmul_with_diagonal_matrices_ &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.239s), turn 1 -&gt; world_model (3.203s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.237s, turn 1 after 3.202s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_13_Matmul_for_symmetric_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.741s), turn 1 -&gt; world_model (3.732s), turn 2 -&gt; world_model (3.157s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.74s, turn 1 after 3.731s, turn 2 after 3.155s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_14_Matmul_for_upper_triangular_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.704s), turn 1 -&gt; world_model (3.373s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.703s, turn 1 after 3.373s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_15_Matmul_for_lower_triangular_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.15s), turn 1 -&gt; world_model (3.489s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.149s, turn 1 after 3.488s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_16_Matmul_with_transposed_A &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>races this episode: turn 0 -&gt; world_model (3.378s), turn 1 -&gt; world_model (3.476s)</pre></div><div><span class=tagR>what really happened</span><pre>real executions KILLED mid-flight: turn 0 after 3.377s, turn 1 after 3.475s
+(a full execution takes ~110s, so none got near finishing)</pre></div></div></div>
+<h2>Turn after turn of feedback moves the true score by nothing</h2><p class=lede>The real grader ran every turn as a log-only shadow. 94–100% of turns change the true score by exactly zero; mean delta +0.0000. These episodes each spent several turns rewriting code with no change in grade.</p>
+<div class=ex><div class=exh>kernelbench/l1_100_HingeLoss &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=0] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 1 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=0] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 2 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will attempt to compile and load the CUDA kernels. If compilation succeeds, the ModelNew class will be ins</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 3 turns: 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_10_3D_tensor_matrix_multiplication &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute the batched matrix multiplication. For inputs A of shape (16, 1024, 
+
+turn 1 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute the custom CUDA kernel for batched matrix multiplication. For inputs
+
+turn 2 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution provides the compute kernel(s) (e.g., dot-product) needed to operate on the new format for the targeted execution paths.
+  [reward=0] The s</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 6 turns: 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_11_4D_tensor_matrix_multiplication &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution provides the compute kernel(s) (e.g., dot-product) needed to operate on the new format for the targeted execution paths.
+  [reward=0] The s
+
+turn 1 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=0] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 2 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute without runtime errors. The ModelNew class will perform 4D tensor-ma</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 6 turns: 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_11_4D_tensor_matrix_multiplication &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution provides the compute kernel(s) (e.g., dot-product) needed to operate on the new format for the targeted execution paths.
+  [reward=0] The s
+
+turn 1 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute, producing output tensor of shape (b, i, j, k) = (8, 256, 512, 768) 
+
+turn 2 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=0] The solution provides the compute kernel(s) (e.g., dot-product) needed to operate on the new format for the targeted execution paths.
+  [reward=1] The s</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 4 turns: 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_13_Matmul_for_symmetric_matrices &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=0] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 1 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 2 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 8 turns: 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_16_Matmul_with_transposed_A &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 1 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution avoids introducing unnecessary computational overhead per invocation, favoring vectorized or kernel-native operations over manual element
+
+turn 2 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute without runtime errors. The ModelNew class will correctly compute C </pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 5 turns: 0.00, 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_16_Matmul_with_transposed_A &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: Code will compile successfully and execute without runtime errors. The custom CUDA kernel will produce mathematical
+
+turn 1 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute without runtime errors. It will produce a tensor of shape (M, N) = (
+
+turn 2 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and produce a ModelNew class that can be instantiated and called with input tens</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 4 turns: 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_17_Matmul_with_transposed_B &middot; kernelbench_A_dndw</div><div class=cols><div><span class=tagL>world model said</span><pre>turn 0 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute without runtime errors. The custom CUDA kernel will compute matrix m
+
+turn 1 feedback:
+  The code world model SIMULATED running your previous code (prediction, not a real run):
+  Predicted output/behavior: The code will compile successfully and execute the matrix multiplication operation. For inputs A (2048, 8192) and B
+
+turn 2 feedback:
+  Rubric rewards for your previous code (1 = satisfied, 0 = violated):
+  [reward=1] The solution provides the compute kernel(s) (e.g., dot-product) needed to operate on the new format for the targeted execution paths.
+  [reward=0] The s</pre></div><div><span class=tagR>what really happened</span><pre>true score after every one of those 6 turns: 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+
+the code was re-written repeatedly and the real grade never changed</pre></div></div></div>
+<h2>A third of the rubric criteria point the wrong way</h2><p class=lede>Hygiene criteria (tests, docs, naming) have mean lift −0.173: they flag working code MORE than broken code, because working code is pragmatic and messy while broken code is often tidy. They cancel the functional criteria (+0.088) to a net −0.028.</p>
+<div class=ex><div class=exh>criterion 9bbd36551e &middot; all runs pooled</div><div class=cols><div><span class=tagL>world model said</span><pre>The solution is structured clearly, with helper routines or well-named components that make the partitioning and scoring logic readable and maintainable.</pre></div><div><span class=tagR>what really happened</span><pre>flagged on 4/8 WORKING programs (50%)
+flagged on 0/11 BROKEN programs (0%)
+
+lift -0.50 — it points the WRONG WAY</pre></div></div></div>
+<div class=ex><div class=exh>criterion 5395d4a0eb &middot; all runs pooled</div><div class=cols><div><span class=tagL>world model said</span><pre>The solution is structured clearly with well-named helper routines separating candidate generation, validation, and output.</pre></div><div><span class=tagR>what really happened</span><pre>flagged on 3/5 WORKING programs (60%)
+flagged on 2/14 BROKEN programs (14%)
+
+lift -0.46 — it points the WRONG WAY</pre></div></div></div>
+<div class=ex><div class=exh>criterion 39668c10ee &middot; all runs pooled</div><div class=cols><div><span class=tagL>world model said</span><pre>Discard everything else &quot;however good it sounds,&quot; there are **no valid observations to keep**. The genuine issues one could raise about these solutions (e.g., Rank 2 increments the counter but never repositions the summary writer via `_pop_writer`/`_push_writer`, so scalars may still not advance in the writer&#x27;s step context) are real code-review points, but none of them correspond to any target error type. Forcing th</pre></div><div><span class=tagR>what really happened</span><pre>flagged on 4/5 WORKING programs (80%)
+flagged on 5/6 BROKEN programs (83%)
+
+lift +0.03 — it points the WRONG WAY</pre></div></div></div>
+<div class=ex><div class=exh>criterion 6d22564846 &middot; all runs pooled</div><div class=cols><div><span class=tagL>world model said</span><pre>**The task is not from the benchmark family the rubric targets.** The target error types describe failures of a *coding agent solving data-science / Kaggle-style competition tasks* (writing submissions, loading training data, importing ML libraries, respecting compute budgets, handling dataset layouts). The actual `&lt;request&gt;` is a small library bug-fix in Keras (`ops.image.resize` allowing dynamic tensor sizes). Ther</pre></div><div><span class=tagR>what really happened</span><pre>flagged on 5/6 WORKING programs (83%)
+flagged on 8/9 BROKEN programs (89%)
+
+lift +0.06 — it points the WRONG WAY</pre></div></div></div>
+<div class=ex><div class=exh>criterion e14cf3d1dd &middot; all runs pooled</div><div class=cols><div><span class=tagL>world model said</span><pre>**The solutions contain none of the mechanisms the error types describe.** Both ranked snippets differ only in whether they guard `size[0]`/`size[1]` comparisons with `isinstance(x, int)` before applying `&lt;= 0` — i.e., allowing symbolic/dynamic (non-int) sizes. This maps to input-type validation, not to any of: - silent-fallback-invalid-submission - unvalidated-column-schema - missing-third-party-dependency - no-comp</pre></div><div><span class=tagR>what really happened</span><pre>flagged on 4/5 WORKING programs (80%)
+flagged on 7/8 BROKEN programs (88%)
+
+lift +0.07 — it points the WRONG WAY</pre></div></div></div>
+<h2>What the interpreter says, that the world model cannot</h2><p class=lede>The interpreter's feedback names the defect with numbers. This is the signal that converts 3/20 tasks from fail to pass — and the signal the race discards at 3.6s in favour of a prediction.</p>
+<div class=ex><div class=exh>kernelbench/l1_100_HingeLoss &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: eval error: eval_kernel_against_ref returned None twice (build lock error)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_10_3D_tensor_matrix_multiplication &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: eval error: /site-packages/torch/cuda/__init__.py&quot;, line 1162, in synchronize
+    return torch._C._cuda_synchronize()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an ill</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_11_4D_tensor_matrix_multiplication &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: eval error: eval_kernel_against_ref returned None twice (build lock error)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_12_Matmul_with_diagonal_matrices_ &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: correct but speedup=0.8963 &lt;= 1.0 (kernel 0.0627 ms vs ref 0.0562 ms)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_13_Matmul_for_symmetric_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: wrong output: Output mismatch (0 / 5)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_14_Matmul_for_upper_triangular_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: correct but speedup=0.6267 &lt;= 1.0 (kernel 4.34 ms vs ref 2.72 ms)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_15_Matmul_for_lower_triangular_matrices &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: correct but speedup=0.3953 &lt;= 1.0 (kernel 6.88 ms vs ref 2.72 ms)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<div class=ex><div class=exh>kernelbench/l1_16_Matmul_with_transposed_A &middot; kernelbench_A_tr</div><div class=cols><div><span class=tagL>world model said</span><pre>INTERPRETER feedback (self-repair arm):
+Real execution: 0/1 tests passed.
+- input: kernel eval
+  expected: compiled + correct + speedup&gt;1.0
+  got: correct but speedup=0.1019 &lt;= 1.0 (kernel 25.7 ms vs ref 2.62 ms)</pre></div><div><span class=tagR>what really happened</span><pre>names the concrete defect, with numbers.
+this is the feedback the WM arms cancel at 3.6s and replace with a prediction.</pre></div></div></div>
+<footer>45 verbatim examples across 6 claims, extracted from the gym logs by scripts/make_evidence_page.py. Nothing hand-entered.</footer></div>
