@@ -21,7 +21,7 @@ footer{color:#898781;font-size:12.5px;margin-top:40px;border-top:1px solid #e2e1
 a{color:#0a7a45}
 </style><div class=wrap>
 <h1>Evidence: how the world-model stack fails</h1>
-<p class=sub>Every claim in the <a href='diagnosis.html'>diagnosis</a>, with verbatim excerpts pulled from the run logs. Left is what the world model said; right is what actually happened. Nothing is paraphrased. Full traces: <a href='traces.html'>traces.html</a></p>
+<p class=sub>Every claim in the <a href='diagnosis.html'>diagnosis</a>, with verbatim excerpts pulled from the run logs. Left is what the world model said; right is what actually happened. Nothing is paraphrased. Full traces: <a href='traces.html'>traces.html</a> &middot; rubric browser: <a href='rubrics.html'>rubrics.html</a></p>
 <p class=lede style='background:#fffaf1;border-left:3px solid #e0a955;padding:10px 14px;border-radius:6px'><b>In flight:</b> every rubric run below used the original, maximally biased prompt &mdash; all seven of our previous debias runs were <code>--sim-only</code>, so the rubric lane had never actually been debiased. That run (<code>--wm-evidence</code>) is executing now; these traces show the state it is being compared against, not a verdict on debiasing.</p><h2>The world model condemns code that then passes</h2><p class=lede>394 live audits: it said FAIL on 386 of them and was right about working code <b>0 times</b>. False-alarm rate on genuinely working code: 100%. Below are real cases where it flagged criteria and the interpreter then passed that exact program.</p>
 <div class=ex><div class=exh>mlebench/denoising-dirty-documents &middot; mlelite_A_dw</div><div class=cols><div><span class=tagL>world model said</span><pre>world model flagged 6 of 10 criteria as VIOLATED
 
