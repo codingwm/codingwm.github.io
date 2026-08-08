@@ -27,11 +27,12 @@ function filt(cls,btn){
   document.querySelectorAll('details.rubric').forEach(d=>{
     d.style.display=(cls==='all'||d.dataset.cls===cls)?'':'none';});
 }
-</script></head><body><div style="position:sticky;top:0;z-index:9;display:flex;gap:14px;padding:10px 24px;background:#161a22;border-bottom:1px solid #2a2f3a;font-family:-apple-system,Segoe UI,Helvetica,sans-serif;font-size:13px">
+</script></head><body><div style="position:sticky;top:0;z-index:9;display:flex;gap:14px;padding:10px 24px;background:#161a22;border-bottom:1px solid #2a2f3a;font-family:-apple-system,Segoe UI,Helvetica,sans-serif;font-size:13px;flex-wrap:wrap">
 <a href="index.html" style="color:#9aa4b2;text-decoration:none">&larr; main results</a>
 <span style="color:#2a2f3a">|</span>
 <a href="conceptual.html" style="color:#9aa4b2;text-decoration:none">causal dashboard</a>
 <a href="conceptual_traces.html" style="color:#9aa4b2;text-decoration:none">P/R comparison + traces</a>
+<a href="conceptual_distributions.html" style="color:#9aa4b2;text-decoration:none">sanity + distributions</a>
 <a href="conceptual_rubrics.html" style="color:#8ab4ff;text-decoration:none">rubric library (183)</a>
 </div>
 <header><h1>Conceptual rubric library &amp; experiment metrics</h1>
