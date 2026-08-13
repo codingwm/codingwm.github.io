@@ -24,4 +24,6 @@ h2{margin-top:28px}img{max-width:100%;border:1px solid #e5e5e0;border-radius:6px
 <tr><td>opus WM + fixed mechanics (error-family-matched)</td><td>-1.1%</td><td>(-6.5%, +4.7%)</td><td>35/53</td></tr>
 <tr><td>fable WM + fixed mechanics</td><td>-0.2%</td><td>(-5.3%, +5.2%)</td><td>37/52</td></tr></table>
 <p><b>Verdict:</b> in the single-revision regime with Haiku, no feedback arm (including interpreter feedback) beats the plain second-pass control beyond noise; the CWM matches the interpreter everywhere. Next levers: weaker coder (Qwen), multi-turn.</p>
+<h2>Definitive single-revision verdict (3 replicates, per-state averaged)</h2>
+<p>On the 74 held-out programs where the WM fires, CWM-feedback vs self-fix: <b>mean &minus;1.6%, CI95 (&minus;3.6%, +0.4%)</b>, median &minus;0.2%, W25/L41. Single-revision rubric feedback does not improve Haiku beyond an unaided second pass; the WM&nbsp;&asymp;&nbsp;interpreter parity result is unaffected. Next mechanism under test: multi-turn feedback loops (the deployed regime).</p>
 </body></html>
