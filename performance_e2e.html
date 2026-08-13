@@ -43,4 +43,13 @@ h2{margin-top:28px}img{max-width:100%;border:1px solid #e5e5e0;border-radius:6px
 
 <h2>In flight</h2>
 <p>Transmission-fix arms on the 74 WM-fired programs: <b>patchrev</b> (apply flagged fixes surgically — the proven +38% channel — then a free improvement pass) and <b>mt_cwm</b> (3-turn loop, WM re-judges each revision) vs matched controls.</p>
+<h2>Raw official scores per competition (keep-best means)</h2>
+<table><tr><th>competition (direction)</th><th>original</th><th>revise</th><th>cwm (ours)</th><th>interp</th></tr>
+<tr><td><b>nyc-taxi-fare (RMSE &darr;)</b></td><td>89.50</td><td>89.34</td><td><b>6.07</b></td><td>5.79</td></tr>
+<tr><td>dogs-vs-cats (log loss &darr;)</td><td>1.226</td><td>0.587</td><td>0.590</td><td>0.597</td></tr>
+<tr><td><b>tweet-sentiment (Jaccard &uarr;)</b></td><td>0.377</td><td>0.422</td><td><b>0.479</b></td><td>0.466</td></tr>
+<tr><td>stanford-covid (MCRMSE &darr;)</td><td>0.352</td><td>0.341</td><td>0.339</td><td>0.331</td></tr>
+<tr><td>statoil-iceberg (log loss &darr;)</td><td>0.366</td><td><b>0.317</b></td><td>0.337</td><td>0.313</td></tr>
+<tr><td>lmsys-arena (log loss &darr;)</td><td>1.046</td><td>1.044</td><td><b>1.041</b></td><td>1.042</td></tr></table>
+<p class="note">The aggregate median hides this: CWM feedback produces dramatic real-score wins exactly where its flags name the binding defect (taxi: unaided revision missed the structural bug entirely; the WM's flags fixed it at interpreter parity, zero execution) and loses where flags anchor (statoil). A DL-enabled rubric regeneration + rerun is in progress to make absolute leaderboard position (medals) a live axis.</p>
 </body></html>
