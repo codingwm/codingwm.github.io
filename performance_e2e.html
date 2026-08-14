@@ -64,12 +64,29 @@ size &mdash; all four confidence intervals span zero. patchrev has the best win/
 tightest interval of the rubric arms; interpreter feedback leads on medals. The world model's
 execution-free reward signal is within noise of interpreter feedback per turn, which is the racing
 premise; its advantage is that a turn costs ~15 s instead of a 210 s median program run.</p>
-<h2>Causal precision, DL library</h2>
-<p class="note">Apply the flagged rubric's fix surgically, re-run, re-grade: <b>0.268</b> (26 of 97
-tested fires improved the official score above that competition's own measured jitter) &mdash; equal to
-the repo's canonical library, below the sklearn-era round-2 library's 0.378. Per-competition noise
-floors are essential here: the DL regime's global p95 jitter is 112% relative, which would make any
-threshold-based verdict meaningless. 122 of 250 sampled fires could not be measured because the
-patched program crashed on re-run (GPU OOM/timeouts), excluded rather than counted against the rubric.
-Non-fired probe: 0 causal positives in 60 sampled pairs.</p>
+<h2>Causal precision, DL library (corrected)</h2>
+<table><tr><th>measurement</th><th>value</th></tr>
+<tr><td>tested fires (patched, re-run, re-graded)</td><td>179</td></tr>
+<tr><td>improved above that competition's noise floor</td><td>51</td></tr>
+<tr><td><b>causal precision</b></td><td><b>0.285</b></td></tr>
+<tr><td>repo canonical library, same measure</td><td>0.268</td></tr>
+<tr><td>sklearn-era round-2 library</td><td>0.378</td></tr></table>
+<p class="note"><b>Corrected 2026-08-14:</b> the first DL causal run reported 0.268 on a
+<i>biased</i> sample. A path-rewrite bug (programs writing submissions via an
+<code>output_dir</code> variable pointing at their original trajectory directory) made 119 of 250
+experiments unmeasurable, and the loss was concentrated by competition (cassava 20/20, dogs-vs-cats
+38/38 lost vs tweet-sentiment 6%) and by rubric class (c7 90%, c12 82%, c5 81% lost vs c9 9%) &mdash;
+i.e. image competitions and invasive training-loop fixes were excluded. After the fix, measurement
+rate went from 39% to 84% and the number is <b>0.285 on 186 measured experiments</b>.</p>
+<p class="note"><b>Threshold sensitivity is the dominant uncertainty, not sampling error.</b>
+Measured on this data: precision is 0.73 with no floor, 0.28 at half the per-competition floor,
+0.20 at 1&times;, 0.09 at 2&times;, 0.07 under a global p95 floor. Six of ten competition floors
+currently rest on a <i>single</i> re-run. A 5-replicate noise-floor measurement is running to
+replace those point estimates with real jitter distributions; the number will be restated against
+it. Any cross-library comparison (0.285 vs 0.268 vs 0.378) inherits this sensitivity and should not
+be read as a precise ordering.</p>
+<p class="note">Recall side: the non-fired probe measured 7 of 60 sampled pairs and found 4 causal
+positives, which extrapolates to a large estimated missed-positive population &mdash; so the world
+model is <i>selective</i>, not exhaustive: there are real improvements it does not flag. Reported
+rather than buried, since the earlier run's 0-of-60 result implied the opposite.</p>
 </body></html>
