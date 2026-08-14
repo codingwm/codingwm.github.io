@@ -64,29 +64,28 @@ size &mdash; all four confidence intervals span zero. patchrev has the best win/
 tightest interval of the rubric arms; interpreter feedback leads on medals. The world model's
 execution-free reward signal is within noise of interpreter feedback per turn, which is the racing
 premise; its advantage is that a turn costs ~15 s instead of a 210 s median program run.</p>
-<h2>Causal precision, DL library (corrected)</h2>
-<table><tr><th>measurement</th><th>value</th></tr>
-<tr><td>tested fires (patched, re-run, re-graded)</td><td>179</td></tr>
-<tr><td>improved above that competition's noise floor</td><td>51</td></tr>
-<tr><td><b>causal precision</b></td><td><b>0.285</b></td></tr>
-<tr><td>repo canonical library, same measure</td><td>0.268</td></tr>
-<tr><td>sklearn-era round-2 library</td><td>0.378</td></tr></table>
-<p class="note"><b>Corrected 2026-08-14:</b> the first DL causal run reported 0.268 on a
-<i>biased</i> sample. A path-rewrite bug (programs writing submissions via an
-<code>output_dir</code> variable pointing at their original trajectory directory) made 119 of 250
-experiments unmeasurable, and the loss was concentrated by competition (cassava 20/20, dogs-vs-cats
-38/38 lost vs tweet-sentiment 6%) and by rubric class (c7 90%, c12 82%, c5 81% lost vs c9 9%) &mdash;
-i.e. image competitions and invasive training-loop fixes were excluded. After the fix, measurement
-rate went from 39% to 84% and the number is <b>0.285 on 186 measured experiments</b>.</p>
-<p class="note"><b>Threshold sensitivity is the dominant uncertainty, not sampling error.</b>
-Measured on this data: precision is 0.73 with no floor, 0.28 at half the per-competition floor,
-0.20 at 1&times;, 0.09 at 2&times;, 0.07 under a global p95 floor. Six of ten competition floors
-currently rest on a <i>single</i> re-run. A 5-replicate noise-floor measurement is running to
-replace those point estimates with real jitter distributions; the number will be restated against
-it. Any cross-library comparison (0.285 vs 0.268 vs 0.378) inherits this sensitivity and should not
-be read as a precise ordering.</p>
-<p class="note">Recall side: the non-fired probe measured 7 of 60 sampled pairs and found 4 causal
-positives, which extrapolates to a large estimated missed-positive population &mdash; so the world
-model is <i>selective</i>, not exhaustive: there are real improvements it does not flag. Reported
-rather than buried, since the earlier run's 0-of-60 result implied the opposite.</p>
+<h2>Causal precision, DL library (final)</h2>
+<table><tr><th>threshold basis</th><th>helped / measured</th><th>precision</th></tr>
+<tr><td><b>5-replicate per-competition floors (final)</b></td><td><b>35 / 179</b></td><td><b>0.196</b></td></tr>
+<tr><td>same, half floor</td><td>75 / 179</td><td>0.419</td></tr>
+<tr><td>same, double floor</td><td>4 / 179</td><td>0.022</td></tr>
+<tr><td>1&ndash;2 replicate floors (superseded, reported earlier today)</td><td>51 / 179</td><td>0.285</td></tr></table>
+<p class="note"><b>Why the number fell.</b> With five replicates per competition instead of one, measured
+run-to-run jitter grew almost everywhere: cassava 0.005 &rarr; 0.253, lmsys 0.002 &rarr; 0.345,
+taxi 2.75 &rarr; 5.41, and dogs-vs-cats acquired a floor (7.9) where it previously had none. A single
+re-run systematically <i>understates</i> how far a GPU program's score wanders, so the old thresholds
+credited noise as improvement. Only stanford-covid and tweet-sentiment were stable &mdash; the two
+competitions that had dominated the earlier, path-bug-biased sample.</p>
+<p class="note"><b>Consequence for comparisons.</b> The sklearn-era library's 0.378 and the repo's
+canonical 0.268 were both computed against thin floors of exactly this kind. They are lenient
+measurements; 0.196 is a strict one. No ordering among the three should be asserted until they are
+recomputed on equal footing.</p>
+<p class="note"><b>Known blemishes.</b> nfl-player-contact-detection's floor is nonsensical
+(5&times;10<sup>8</sup> relative, from a replicate whose baseline was near zero), so its 3/6 carries no
+information; the metric-scale case needs special handling. And the threshold multiplier still swings
+the result (0.42 at half floor, 0.02 at double), which is inherent to threshold-based causal claims &mdash;
+the range is the finding, not the point estimate.</p>
+<p class="note"><b>Recall.</b> The non-fired probe measured 7 of 60 sampled pairs and found 4 causal
+positives: the world model is selective, not exhaustive &mdash; real improvements exist that it does not
+flag. (The earlier run's 0-of-60 implied otherwise and was wrong.)</p>
 </body></html>
