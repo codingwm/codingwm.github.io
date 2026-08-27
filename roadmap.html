@@ -34,7 +34,7 @@ table.disc tr.g td{border-top:1px solid var(--grid);padding-top:9px}
 table.disc tr.last td{padding-bottom:9px}
 table.disc td:first-child{color:var(--ink);font-weight:600;vertical-align:middle;
  border-right:1px solid var(--grid);padding-right:18px}
-table.disc .s{font-weight:400;color:var(--ink2);font-size:12px}
+table.disc .s,td .s{font-weight:400;color:var(--ink2);font-size:12px}
 table.disc .h{color:var(--accent);font-weight:600}
 table.disc td.n{width:90px}
 img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
@@ -134,45 +134,59 @@ rows are repositories, each yielding many task instances at collection time.
 <a href="https://arxiv.org/pdf/2412.21139">SWE-Gym</a></li>
 </ul>
 
-<h2><span class="n">3</span>End-to-end accuracy, current state<span class="tag part">partial</span></h2>
+<h2><span class="n">3</span>End-to-end accuracy — MLE-bench, in-distribution rubrics<span class="tag part">partial</span></h2>
+<p>These rubrics were mined from MLE-bench competitions, so this run is
+<b>in-distribution</b>: the mining and eval competitions are disjoint, but both come from
+MLE-bench. It is a check that the end-to-end loop runs and is measurable, not a held-out
+result.</p>
 <img src="assets/e2e_stage_arms_labeled.png" alt="Wall-clock e2e results by scaling stage">
-<div class="kpi">
-<div><div class="v">38.8%</div><div class="l">interpreter improved (88/227)</div></div>
-<div><div class="v">23.0%</div><div class="l">world model improved (52/226)</div></div>
-<div><div class="v">1.68&times;</div><div class="l">interpreter advantage, pooled</div></div>
-<div><div class="v">0%</div><div class="l">interpreter break rate</div></div>
-</div>
-<p>Five arms each get 1800 s on the same program, which already carries an official score,
-and are judged on whether they beat that score. The rubric arms clear the unguided control
-(0&ndash;10%) by two to three times, so the channel carries real signal, but they lose to
-interpreter-only, 23.0% against 38.8% pooled over 227 attempts. The interpreter never
-breaks a program while the world model breaks a substantial fraction, which removes its
-chance to score at all. Growing the library from 151 to 708 rubrics changed nothing —
-33, 24, 18, 20, 25% — even though rubric quality over those same stages rose from 0.00 to
-0.38 error precision and 0.00 to 0.48 recall. Quality improved and utility did not follow,
-which points at retrieval and actionability rather than rubric correctness.</p>
-<div class="note warn"><p>Bars compare within a stage only. Each stage's eval set is a nested
-prefix, so later stages face harder competitions and roughly half the interpreter's
-apparent 52&rarr;31% decline is task mix rather than degradation; on the five competitions
-common to every stage the same arm swings &plusmn;11 points at fixed sample size. Stages 3
-to 5 are incomplete (15/17, 22/24, 26/29) and the missing competitions are the hard ones.
-Medal rate is absent for this campaign, so this is not the published MLE-bench metric.</p></div>
+<p>Last Saturday's end-to-end run, using the rubrics presented that day, finished two days
+ago. We are lagging slightly behind interpreter-only, controlling for wall clock so every
+arm gets 30 minutes. The higher numbers in the earlier stages are mainly an artifact of
+having fewer eval tasks there, so the percentage shifts easily with run-to-run noise.</p>
+<p>The <b>x-axis</b> groups runs by rubric-database size, each group showing the five arms.
+The <b>y-axis is improvement rate</b>: the percent of attempts where the final code scored
+better than the seed starting program, an existing MLE-bench code trace shared by all runs.
+MLE-bench officially reports <b>medal rate</b> — how many competitions the agent's
+submission clears the Kaggle leaderboard's bronze, silver or gold thresholds — but our
+30-minute runs do not score enough medals on the smaller split to measure improvement, so
+improvement rate is the better gauge of whether the end-to-end loop is working. For the
+full run, once MLE-bench is completely held out, we can use medal rate and the official
+metrics.</p>
 
-<h2><span class="n">4</span>Curation speed</h2>
+<h2><span class="n">4</span>Rubric precision / recall — updated generation pipeline</h2>
+<p>After these end-to-end results, William and I looked through the traces from the run and
+found coverage issues coming from the prompts and the generation pipeline. William improved
+the pipeline by asking the rubric-generation model to focus on coverage and by adding
+filtering steps, which gave much higher P/R. Below is the new rubric database's P/R. We are
+currently running an end-to-end experiment on these updated, better-coverage rubrics.
+Even with the better generation, the performance rubrics appear saturated.</p>
+<img src="assets/rubric_PR.png" alt="Precision and recall of the updated rubric database">
+<p>As with the section above, these rubrics are mined from MLE-bench competitions and are
+therefore in-distribution.</p>
+
+<h2><span class="n">5</span>Curation speed</h2>
+<p>Measured from the banked run summaries, not estimated. Production figures come from 11
+MLE-bench collection runs totalling 41.5 pod-hours (42 error and 146 performance rubrics);
+the external-domain figures come from the four DSBench and kernel test runs, 0.35 pod-hours
+in total.</p>
 <table>
-<thead><tr><th>regime</th><th class="n">rubrics / pod-hour</th><th>conditions</th></tr></thead>
+<thead><tr><th>regime</th><th class="n">error / pod-hr</th><th class="n">perf / pod-hr</th><th class="n">combined</th></tr></thead>
 <tbody>
-<tr><td>Production MLE-bench competitions</td><td class="n">4.5</td><td>3600 s exec cap, &le;40 programs; 11 runs, 188 rubrics over 41.5 pod-hours</td></tr>
-<tr><td>Light external tasks (DSBench tabular)</td><td class="n">76&ndash;112</td><td>900 s cap, &le;8 programs</td></tr>
-<tr><td>GPU kernel tasks</td><td class="n">53</td><td>900 s cap, &le;8 programs, T4</td></tr>
+<tr><td>Production MLE-bench competitions <span class="s">(3600 s cap, &le;40 programs)</span></td>
+    <td class="n">1.0</td><td class="n">3.5</td><td class="n">4.5</td></tr>
+<tr><td>External domains <span class="s">(DSBench + kernels, 900 s cap, &le;8 programs)</span></td>
+    <td class="n">20.0</td><td class="n">42.9</td><td class="n">63.0</td></tr>
 </tbody></table>
-<p>Throughput is set by task execution cost rather than by curation, since a rubric needs a
-program that actually ran — and, for the performance family, one that was graded twice.
-Pods scale linearly at one competition each, so 1,000 rubrics is about 220 pod-hours at the
-production rate, roughly seven hours across thirty pods, and materially less on the lighter
-external datasets that dominate the mining pool.</p>
+<p>Performance rubrics come roughly three times faster than error rubrics in both regimes,
+since a hill-climb turn yields a candidate pair on every graded program whereas an error
+rubric needs a program that actually crashed. Overall throughput is set by task execution
+cost rather than by curation: a rubric requires a program that ran, and for the performance
+family one that was graded twice. Pods scale linearly at one competition each, so 1,000
+rubrics is roughly 220 pod-hours at the production rate, about seven hours across thirty
+pods, and materially less on the lighter external datasets.</p>
 
-<h2><span class="n">5</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
+<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
 <p>Curate 1,000 rubrics distributed uniformly over all thirteen mining datasets and
 evaluate, producing a scaling-law figure with rubric count on the x-axis and end-to-end
 accuracy on the y-axis, plus companion panels for error and performance precision and
@@ -184,11 +198,10 @@ because the medal fields postdate that code snapshot and the per-attempt rows we
 by an artifact-glob bug. Both are fixed, so a rerun yields the metric comparable to
 published MLE-bench numbers.</p>
 
-<h2><span class="n">6</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
+<h2><span class="n">7</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
 <p>Collection now runs end to end on the external domains, verified on DSBench (five and
 four performance rubrics on two tasks) and on kernels (six), with error rubrics in both.
-The sequence is to mine across DA-Code, DSBench, InfiAgent-DABench, TritonBench,
-reference-kernels, BackendBench and the SWE pools into <code>rubric_db_mle</code>,
+The next step is to collect rubrics from the other sources in the table above — DA-Code, InfiAgent-DABench, DSBench, MLGym, MLAgentBench, RE-Bench, TritonBench, FastKernels, GPU MODE reference-kernels, BackendBench, SWE-Gym and SWE-smith — and then run end-to-end on those, building <code>rubric_db_mle</code>,
 <code>rubric_db_kernel</code> and <code>rubric_db_swe</code>; audit each database with
 <code>build_domain_db.py</code>, which traces every rubric to its source task and fails the
 build on a held-out origin; then evaluate on the fully held-out benchmarks, giving
