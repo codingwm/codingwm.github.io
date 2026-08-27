@@ -43,6 +43,9 @@ table.disc td.n{width:90px}
 img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
 .note{border-left:3px solid var(--accent);padding:2px 0 2px 14px;margin:14px 0}
 .note.warn{border-left-color:var(--todo)}
+.callout{background:rgba(42,120,214,.07);border:1px solid rgba(42,120,214,.28);border-radius:7px;padding:12px 16px;margin:16px 0}
+.callout p:first-child{margin-top:0}.callout p:last-child{margin-bottom:0}
+.callout ul{margin:8px 0 8px 20px}.callout li{font-size:13.5px}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
  background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
 .kpi{display:flex;gap:26px;flex-wrap:wrap;margin:14px 0}
@@ -83,10 +86,23 @@ behind the strongest reported results</li>
 
 <h2><span class="n">2</span>Benchmarks and mining datasets, by discipline<span class="tag ds">all datasets</span></h2>
 <p>Three disciplines, each with one benchmark held out for evaluation and the rest used only
-for mining. Mining counts are after the leakage filter, which removed nine exact MLE-bench
-competitions sitting inside DSBench and MLAgentBench, two hundred constant-perturbed
-KernelBench copies inside robust-kbench, and flask and sympy inside SWE-smith's own repo
-profiles.</p>
+for mining.</p>
+<div class="callout"><p><b>Every mining source passes an explicit leakage filter</b>, and the
+counts below are post-filter. The filter is not a formality — it caught real overlap in all
+three domains:</p>
+<ul>
+<li><b>9 exact MLE-bench competitions</b> sitting inside DSBench and MLAgentBench, matched
+on Kaggle slug</li>
+<li>robust-kbench's <b>entire 200-problem <code>tasks/kernelbench</code> tree</b>, which is
+KernelBench with <b>perturbed constants</b>. Exact content hashing found <b>zero</b> matches;
+a constant-insensitive fingerprint confirmed 69 and filename matching a further 124, so 193
+of the 200 were positively identified and the directory was excluded wholesale</li>
+<li><b>flask and sympy</b>, two real SWE-bench repositories, inside SWE-smith's own repo
+profiles</li>
+</ul>
+<p>The filter runs at three points: when a pool is enumerated, again at collection time via
+the split guard, and once more at database build, where every rubric is traced back to its
+source task and the build fails if any traces to a held-out task.</p></div>
 <table class="disc">
 <thead><tr><th>discipline</th><th>benchmark</th><th class="n">tasks</th><th>role</th><th>task source</th></tr></thead>
 <tbody>
