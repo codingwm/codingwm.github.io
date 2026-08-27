@@ -166,10 +166,14 @@ Even with the better generation, the performance rubrics appear saturated.</p>
 therefore in-distribution.</p>
 
 <h2><span class="n">5</span>Curation speed</h2>
-<p>Measured from the banked run summaries, not estimated. Production figures come from 11
-MLE-bench collection runs totalling 41.5 pod-hours (42 error and 146 performance rubrics);
-the external-domain figures come from the four DSBench and kernel test runs, 0.35 pod-hours
-in total.</p>
+<p>Measured from the banked run summaries, not estimated. Production figures come from the
+11 MLE-bench collection runs that banked a summary — 42 error and 146 performance rubrics
+over 41.5 pod-hours. Twenty-seven runs were launched; the other sixteen were cancelled
+before finishing, so this sample is biased toward runs that completed, and none of the
+eleven reached its rubric target (all were cut short by the program cap or the clock). Four
+of the eleven produced zero performance rubrics: they are the heavy image competitions
+where no program was graded twice. External-domain figures come from the four DSBench and
+kernel test runs, 0.35 pod-hours in total.</p>
 <table>
 <thead><tr><th>regime</th><th class="n">error / pod-hr</th><th class="n">perf / pod-hr</th><th class="n">combined</th></tr></thead>
 <tbody>
