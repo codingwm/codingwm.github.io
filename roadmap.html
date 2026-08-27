@@ -1,0 +1,187 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rubric-grounded CWM — evaluation roadmap</title>
+<style>
+:root{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--accent:#2a78d6;--todo:#c0532a}
+@media (prefers-color-scheme:dark){:root{--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--grid:#33322f;--accent:#3987e5;--todo:#e0794a}}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--ink);margin:0;padding:40px 24px 80px;
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 34px}
+h2{font-size:19px;margin:44px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--grid)}
+h2 .n{color:var(--ink2);font-weight:400;margin-right:9px}
+h3{font-size:15px;margin:22px 0 6px}
+p,li{color:var(--ink2);margin:8px 0}
+ul{margin:8px 0 8px 20px;padding:0}
+b,strong{color:var(--ink)}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
+ padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px}
+.done{background:#dff0e6;color:#1a6b3d}.todo{background:#fbe6da;color:#9a3f16}
+.part{background:#fdf1cf;color:#7a5c05}
+@media (prefers-color-scheme:dark){.done{background:#1d3b28;color:#7fd3a0}
+ .todo{background:#42241a;color:#f0a97f}
+ .part{background:#3d3312;color:#e6cb6b}}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
+th,td{border-bottom:1px solid var(--grid);padding:7px 10px 7px 0;text-align:left;vertical-align:top}
+th{color:var(--ink2);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
+.note{border-left:3px solid var(--accent);padding:2px 0 2px 14px;margin:14px 0}
+.note.warn{border-left-color:var(--todo)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+ background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
+.kpi{display:flex;gap:26px;flex-wrap:wrap;margin:14px 0}
+.kpi div{min-width:150px}.kpi .v{font-size:24px;color:var(--ink);font-weight:600;
+ font-variant-numeric:tabular-nums}.kpi .l{font-size:12px;color:var(--ink2)}
+footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
+ color:var(--ink2);font-size:12.5px}
+</style></head><body><div class="wrap">
+
+<h1>Rubric-grounded code world models — evaluation roadmap</h1>
+<p class="sub">MLE-bench, KernelBench and SWE-bench are <b>fully held out</b>; rubrics are mined
+only from external datasets. What is measured, what is built, what is next.</p>
+
+<h2><span class="n">1</span>Standard evaluation practice for MLE agents<span class="tag done">explained</span></h2>
+<p><b>MLE-bench</b> is the reference protocol. An agent is given a Kaggle competition's
+public data and a task description, and must write code that produces a
+<code>submission.csv</code>. Grading is <i>not</i> a model judgement: the submission is scored
+by the competition's own metric against a held-out private split, then compared to that
+competition's <b>real historical leaderboard</b>.</p>
+<ul>
+<li><b>Headline metric — medal rate.</b> The percentage of competitions where the submission
+clears the actual bronze / silver / gold thresholds. Secondary: <b>above-median rate</b>,
+and raw metric values per competition.</li>
+<li><b>Fixed budget per attempt</b> (commonly ~24 h wall clock and a fixed machine), no
+internet, no reading the leaderboard. Multiple seeds are run because agent variance is
+large; results are reported as pass@1 or pass@k.</li>
+<li><b>Official grader only.</b> Numbers come from <code>mlebench.grade_csv</code> with medal
+thresholds bundled per competition — not from a re-implementation.</li>
+<li><b>Subsets exist for cost.</b> "Lite" (22 competitions) is the common cheap
+configuration; the full set is 75.</li>
+<li><b>Contamination is a live concern.</b> Competitions predate model cutoffs, so
+solutions may be memorised. This is why a mining/eval split matters for us: any rubric
+mined from a competition we later evaluate on would be a second, subtler leak.</li>
+</ul>
+<div class="note"><p><b>How our measurement differs, and why.</b> Our wall-clock experiment is a
+<i>refinement</i> task, not a from-scratch solve: each arm starts from an existing scored
+program and gets 30 minutes to improve it. Medal transitions are far too rare at that
+budget to discriminate between feedback channels, so we report <b>% of programs improved
+against their own baseline</b>, still on the official grader. Medal rate is the number
+that connects to published MLE-bench results, and we do not yet have it — see §6.</p></div>
+
+<h2><span class="n">2</span>Benchmarks used by this literature<span class="tag done">table</span></h2>
+<table>
+<thead><tr><th>benchmark</th><th class="n">samples</th><th>type</th><th>role for us</th></tr></thead>
+<tbody>
+<tr><td>MLE-bench</td><td class="n">75 competitions</td><td>ML engineering, end-to-end</td><td><b>held out — eval only</b></td></tr>
+<tr><td>KernelBench</td><td class="n">270 problems (L1 100 / L2 100 / L3 50 / L4 20)</td><td>GPU kernel generation</td><td><b>held out — eval only</b></td></tr>
+<tr><td>SWE-bench</td><td class="n">2,294 instances over 12 repos</td><td>software engineering (issue → patch)</td><td><b>held out — eval only</b></td></tr>
+<tr><td>DSBench</td><td class="n">74 modeling + 466 analysis</td><td>data science, Kaggle-derived</td><td>mining pool (modeling half)</td></tr>
+<tr><td>DA-Code</td><td class="n">500 tasks</td><td>data science / agentic</td><td>mining pool</td></tr>
+<tr><td>InfiAgent-DABench</td><td class="n">257 questions over 52 CSVs</td><td>data analysis, closed-form</td><td>mining pool</td></tr>
+<tr><td>MLAgentBench</td><td class="n">13&ndash;14 tasks</td><td>ML research / agentic</td><td>mining pool</td></tr>
+<tr><td>MLGym</td><td class="n">13 tasks (19 configs)</td><td>ML research gym</td><td>mining pool</td></tr>
+<tr><td>RE-Bench</td><td class="n">7 tasks</td><td>AI R&amp;D, expert-authored</td><td>mining pool</td></tr>
+<tr><td>TritonBench</td><td class="n">55 operator suites</td><td>Triton kernels</td><td>mining pool</td></tr>
+<tr><td>GPU MODE reference-kernels</td><td class="n">42 problems</td><td>GPU kernel competition</td><td>mining pool</td></tr>
+<tr><td>BackendBench</td><td class="n">26 op groups</td><td>PyTorch aten ops</td><td>mining pool</td></tr>
+<tr><td>SWE-Gym</td><td class="n">2,438 instances over 11 repos</td><td>software engineering</td><td>mining pool</td></tr>
+<tr><td>SWE-smith</td><td class="n">133 repos (synthetic bugs)</td><td>software engineering</td><td>mining pool</td></tr>
+</tbody></table>
+<p><b>Counts marked as suites / configs / op groups are our own enumeration of the
+released repositories</b> at the pinned SHAs, which can differ from a paper's headline
+figure (a paper may count individual operators where the repo ships grouped suites).
+Held-out sizes are the published ones.</p>
+
+<h2><span class="n">3</span>Training (mining) datasets<span class="tag done">table</span></h2>
+<p>13 datasets, <b>1,176 mining units</b> — all post-leakage-filter. Excluded and verified:
+9 exact MLE-bench competitions found inside DSBench and MLAgentBench, 200
+constant-perturbed KernelBench copies inside robust-kbench, and flask + sympy inside
+SWE-smith's own repo profiles.</p>
+<img src="assets/mining_datasets.png" alt="Mining dataset inventory table">
+<p>Everything is human-authored <b>except SWE-smith</b>, whose bugs are LM-injected — the
+one large synthetic block, and worth stating in any writeup since synthetic bugs need not
+resemble real failure modes. SWE rows count <i>repositories</i>, not task instances.</p>
+
+<h2><span class="n">4</span>End-to-end accuracy, current state<span class="tag part">partial</span></h2>
+<img src="assets/e2e_stage_arms_labeled.png" alt="Wall-clock e2e results by scaling stage">
+<div class="kpi">
+<div><div class="v">38.8%</div><div class="l">interpreter improved (88/227)</div></div>
+<div><div class="v">23.0%</div><div class="l">world model improved (52/226)</div></div>
+<div><div class="v">1.68&times;</div><div class="l">interpreter advantage, pooled</div></div>
+<div><div class="v">0%</div><div class="l">interpreter break rate</div></div>
+</div>
+<p>Five arms, <b>1800 s each</b>, same budget; every arm starts from an already-scored
+program and is measured by the official grader on whether it beat that program's own
+score.</p>
+<ul>
+<li><b>The rubric arms beat the unguided control</b> (0&ndash;10%) by 2&ndash;3&times;, so the
+rubric channel carries real signal.</li>
+<li><b>They lose to interpreter-only</b>, pooled 23.0% vs 38.8%. The interpreter never
+breaks a program; the world model breaks a substantial fraction, which removes its chance
+to score at all.</li>
+<li><b>No scaling effect.</b> World model across 151&rarr;708 rubrics: 33, 24, 18, 20, 25%.
+Flat, while rubric <i>quality</i> over the same stages rose from 0.00 to 0.38 error
+precision and 0.00 to 0.48 recall. Quality improved; utility did not follow.</li>
+</ul>
+<div class="note warn"><p><b>Read bars within a stage only.</b> Each stage's eval set is a nested
+prefix, so later stages include harder competitions — about half the interpreter's
+apparent 52&rarr;31% decline is task mix, not degradation. On the 5 competitions common to
+every stage the same arm swings &plusmn;11 points at fixed sample size. Stages 3&ndash;5 are
+also incomplete (15/17, 22/24, 26/29), and the missing competitions are the hard ones.</p></div>
+
+<h2><span class="n">5</span>Curation speed<span class="tag done">measured</span></h2>
+<table>
+<thead><tr><th>regime</th><th class="n">rubrics / pod-hour</th><th>conditions</th></tr></thead>
+<tbody>
+<tr><td>Production MLE-bench competitions</td><td class="n">4.5</td><td>3600 s exec cap, &le;40 programs, image/DICOM comps; 11 runs, 188 rubrics over 41.5 pod-hours</td></tr>
+<tr><td>Light external tasks (DSBench tabular)</td><td class="n">76&ndash;112</td><td>900 s cap, &le;8 programs</td></tr>
+<tr><td>GPU kernel tasks</td><td class="n">53</td><td>900 s cap, &le;8 programs, T4</td></tr>
+</tbody></table>
+<p>Throughput is dominated by <b>task execution cost</b>, not by curation itself — a rubric
+requires a program that actually ran (and, for the performance family, one that was graded
+twice). Parallel pods multiply this linearly: the fleet runs one competition per pod.</p>
+<div class="note"><p><b>Planning number for §6:</b> 1,000 rubrics at the production rate is
+≈220 pod-hours, i.e. ~7 h on 30 parallel pods. On the lighter external datasets that
+dominate the mining pool, materially less.</p></div>
+
+<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
+<p>Curate <b>1,000 rubrics uniformly distributed over all 13 mining datasets</b>, then
+evaluate. Deliverable is a scaling-law figure:</p>
+<ul>
+<li><b>x-axis</b> rubric count &nbsp;&middot;&nbsp; <b>y-axis</b> end-to-end accuracy</li>
+<li>companion panels: error / performance &times; precision / recall</li>
+</ul>
+<p>Two things this run should fix that the current e2e cannot answer:</p>
+<ul>
+<li><b>Hold the eval set fixed</b> across rubric counts. The present design varies library
+size and task difficulty together, so its horizontal axis is not a scaling curve.</li>
+<li><b>Capture medal rate and above-median.</b> Both are computed by the harness but were
+absent from the stage campaign — the medal fields postdate that code snapshot, and the
+per-attempt rows were dropped by an artifact-glob bug. Both are fixed now, so a rerun
+yields the metric that is comparable to published MLE-bench numbers.</li>
+</ul>
+
+<h2><span class="n">7</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
+<p>Collection now runs end-to-end on the external domains (verified: DSBench 5 and 4
+performance rubrics, kernel 6, plus error rubrics in both). The sequence:</p>
+<ul>
+<li><b>Mine</b> across DA-Code (500), DSBench (66), InfiAgent-DABench (257), TritonBench
+(55), reference-kernels (42), BackendBench (26), SWE-Gym / SWE-smith — building
+<code>rubric_db_mle</code>, <code>rubric_db_kernel</code>, <code>rubric_db_swe</code>.</li>
+<li><b>Audit</b> each database with <code>build_domain_db.py</code>, which traces every rubric
+to its source task and fails the build on a held-out origin.</li>
+<li><b>Evaluate</b> on the fully held-out benchmarks — MLE-bench (75), KernelBench (270),
+SWE-bench (12 repos) — giving leaderboard-honest numbers for the first time.</li>
+</ul>
+<p>Two known gaps to settle first, both measurement decisions rather than plumbing:
+kernel and SWE failures surface <i>inside the grader</i> (wrong results, failing tests)
+while error rubrics are mined from the interpreter, so error-rubric yield in those domains
+is limited to script-level defects; and SWE error truth needs extending from exception
+class to failing-test identity.</p>
+
+<footer>Generated from the frozen split manifests and the banked run artifacts.
+Counts are read at render time, not transcribed.</footer>
+</div></body></html>
