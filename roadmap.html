@@ -20,11 +20,12 @@ a{color:var(--accent)}a:hover{text-decoration:underline}
 b,strong{color:var(--ink)}
 .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
  padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px}
-.done{background:#dff0e6;color:#1a6b3d}.todo{background:#fbe6da;color:#9a3f16}
+.done{background:#dff0e6;color:#1a6b3d}.todo{background:#fbe6da;color:#9a3f16}.run{background:#dce9f7;color:#1b4f86}
 .part{background:#fdf1cf;color:#7a5c05}
 .ds{background:#eceaf6;color:#4a3f7a;font-weight:500;letter-spacing:.02em}
 @media (prefers-color-scheme:dark){.done{background:#1d3b28;color:#7fd3a0}
  .todo{background:#42241a;color:#f0a97f}
+ .run{background:#17314d;color:#8dbdf0}
  .part{background:#3d3312;color:#e6cb6b}
  .ds{background:#2b2740;color:#b9aee6}}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
@@ -215,7 +216,7 @@ exists. 27 runs were launched, 11 banked a summary, none reached its rubric targ
 <tr><td>More pods</td><td class="n">linear</td><td>one competition per pod</td></tr>
 </tbody></table>
 
-<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag ds">data: external mining pool</span><span class="tag todo">not started</span></h2>
+<h2><span class="n">6</span>1,000 rubrics uniformly across the mining pool<span class="tag ds">data: external mining pool</span><span class="tag run">running</span></h2>
 <p>Curate 1,000 rubrics distributed uniformly over all thirteen mining datasets and
 evaluate, producing a scaling-law figure with rubric count on the x-axis and end-to-end
 accuracy on the y-axis, plus companion panels for error and performance precision and
@@ -227,7 +228,7 @@ because the medal fields postdate that code snapshot and the per-attempt rows we
 by an artifact-glob bug. Both are fixed, so a rerun yields the metric comparable to
 published MLE-bench numbers.</p>
 
-<h2><span class="n">7</span>Next: collect externally, evaluate held out<span class="tag ds">data: external &rarr; held-out benchmarks</span><span class="tag todo">not started</span></h2>
+<h2><span class="n">7</span>Collect externally, evaluate held out<span class="tag ds">data: external &rarr; held-out benchmarks</span><span class="tag run">running</span></h2>
 <p>Collection now runs end to end on the external domains, verified on DSBench (five and
 four performance rubrics on two tasks) and on kernels (six), with error rubrics in both.
 The next step is to collect rubrics from the other sources in the table above — DA-Code, InfiAgent-DABench, DSBench, MLGym, MLAgentBench, RE-Bench, TritonBench, FastKernels, GPU MODE reference-kernels, BackendBench, SWE-Gym and SWE-smith — and then run end-to-end on those, building <code>rubric_db_mle</code>,
