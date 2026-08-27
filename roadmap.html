@@ -15,6 +15,8 @@ h2 .n{color:var(--ink2);font-weight:400;margin-right:9px}
 h3{font-size:15px;margin:22px 0 6px}
 p,li{color:var(--ink2);margin:8px 0}
 ul{margin:8px 0 8px 20px;padding:0}
+ul.src li{font-size:13px;margin:6px 0}
+a{color:var(--accent)}a:hover{text-decoration:underline}
 b,strong{color:var(--ink)}
 .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
  padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px}
@@ -64,6 +66,27 @@ configuration; the full set is 75.</li>
 solutions may be memorised. This is why a mining/eval split matters for us: any rubric
 mined from a competition we later evaluate on would be a second, subtler leak.</li>
 </ul>
+<h3>Sources</h3>
+<ul class="src">
+<li><a href="https://arxiv.org/abs/2410.07095">MLE-bench: Evaluating Machine Learning Agents on
+Machine Learning Engineering</a> — Chan et al., OpenAI, arXiv:2410.07095. The protocol above:
+75 Kaggle competitions, official-metric grading against a held-out split, medal thresholds
+taken from each competition's real leaderboard percentiles (so a medal means a comparable
+level of achievement across competitions of different size).
+(<a href="https://openreview.net/pdf?id=6s5uXNWGIh">OpenReview PDF</a> ·
+<a href="https://openai.com/index/mle-bench/">announcement</a>)</li>
+<li><a href="https://github.com/openai/mle-bench">openai/mle-bench</a> — the grader we call
+(<code>mlebench.grade_csv</code>), the bundled per-competition medal thresholds, and the
+Lite / low split files. Reported numbers in this project come from this code, never a
+re-implementation.</li>
+<li><b>Reference results for calibration:</b> the strongest setup in the paper (o1-preview
+with AIDE scaffolding) reaches a bronze medal or better in <b>16.9% of competitions at
+pass@1</b>, rising to <b>34.1% at pass@8</b> — which is why multiple seeds are standard
+practice and why single-run agent comparisons are noisy.</li>
+<li><a href="https://arxiv.org/pdf/2502.13138">AIDE: AI-Driven Exploration in the Space of
+Code</a> — the scaffolding used for the strongest MLE-bench results, i.e. the search-based
+baseline our wall-clock arms should eventually be compared against.</li>
+</ul>
 <div class="note"><p><b>How our measurement differs, and why.</b> Our wall-clock experiment is a
 <i>refinement</i> task, not a from-scratch solve: each arm starts from an existing scored
 program and gets 30 minutes to improve it. Medal transitions are far too rare at that
@@ -90,6 +113,25 @@ that connects to published MLE-bench results, and we do not yet have it — see 
 <tr><td>SWE-Gym</td><td class="n">2,438 instances over 11 repos</td><td>software engineering</td><td>mining pool</td></tr>
 <tr><td>SWE-smith</td><td class="n">133 repos (synthetic bugs)</td><td>software engineering</td><td>mining pool</td></tr>
 </tbody></table>
+<h3>Sources</h3>
+<ul class="src">
+<li>MLE-bench <a href="https://arxiv.org/abs/2410.07095">arXiv:2410.07095</a> ·
+KernelBench <a href="https://arxiv.org/abs/2502.10517">arXiv:2502.10517</a> ·
+SWE-bench <a href="https://arxiv.org/abs/2310.06770">arXiv:2310.06770</a></li>
+<li>DSBench <a href="https://arxiv.org/abs/2409.07703">arXiv:2409.07703</a> ·
+DA-Code <a href="https://arxiv.org/pdf/2504.04808">arXiv:2504.04808</a> ·
+InfiAgent-DABench <a href="https://arxiv.org/pdf/2401.05507">arXiv:2401.05507</a></li>
+<li>MLAgentBench <a href="https://arxiv.org/abs/2310.03302">arXiv:2310.03302</a> ·
+MLGym <a href="https://arxiv.org/abs/2502.14499">arXiv:2502.14499</a> ·
+RE-Bench <a href="https://arxiv.org/abs/2411.15114">arXiv:2411.15114</a></li>
+<li>TritonBench <a href="https://arxiv.org/pdf/2502.14752">arXiv:2502.14752</a> ·
+FastKernels <a href="https://arxiv.org/pdf/2605.23215">arXiv:2605.23215</a> ·
+GPU MODE <a href="https://github.com/gpu-mode/reference-kernels">reference-kernels</a> ·
+<a href="https://github.com/meta-pytorch/BackendBench">BackendBench</a></li>
+<li>SWE-Gym <a href="https://arxiv.org/pdf/2412.21139">arXiv:2412.21139</a> ·
+SWE-smith <a href="https://arxiv.org/pdf/2504.21798">arXiv:2504.21798</a> ·
+R2E-Gym <a href="https://arxiv.org/pdf/2504.07164">arXiv:2504.07164</a></li>
+</ul>
 <p><b>Counts marked as suites / configs / op groups are our own enumeration of the
 released repositories</b> at the pinned SHAs, which can differ from a paper's headline
 figure (a paper may count individual operators where the repo ships grouped suites).
