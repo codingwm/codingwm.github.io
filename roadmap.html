@@ -22,9 +22,11 @@ b,strong{color:var(--ink)}
  padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px}
 .done{background:#dff0e6;color:#1a6b3d}.todo{background:#fbe6da;color:#9a3f16}
 .part{background:#fdf1cf;color:#7a5c05}
+.ds{background:#eceaf6;color:#4a3f7a;font-weight:500;letter-spacing:.02em}
 @media (prefers-color-scheme:dark){.done{background:#1d3b28;color:#7fd3a0}
  .todo{background:#42241a;color:#f0a97f}
- .part{background:#3d3312;color:#e6cb6b}}
+ .part{background:#3d3312;color:#e6cb6b}
+ .ds{background:#2b2740;color:#b9aee6}}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
 th,td{border-bottom:1px solid var(--grid);padding:7px 10px 7px 0;text-align:left;vertical-align:top}
 th{color:var(--ink2);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase}
@@ -53,7 +55,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <p class="sub">MLE-bench, KernelBench and SWE-bench are <b>fully held out</b>; rubrics are mined
 only from external datasets. What is measured, what is built, what is next.</p>
 
-<h2><span class="n">1</span>Standard evaluation practice for MLE agents</h2>
+<h2><span class="n">1</span>Standard evaluation practice for MLE agents<span class="tag ds">background</span></h2>
 <p>MLE-bench is the reference protocol. An agent receives a Kaggle competition's public
 data and description and must produce a <code>submission.csv</code>; that file is scored by
 the competition's own metric against a held-out private split, and the score is placed on
@@ -78,7 +80,7 @@ predate current model cutoffs.</p>
 behind the strongest reported results</li>
 </ul>
 
-<h2><span class="n">2</span>Benchmarks and mining datasets, by discipline</h2>
+<h2><span class="n">2</span>Benchmarks and mining datasets, by discipline<span class="tag ds">all datasets</span></h2>
 <p>Three disciplines, each with one benchmark held out for evaluation and the rest used only
 for mining. Mining counts are after the leakage filter, which removed nine exact MLE-bench
 competitions sitting inside DSBench and MLAgentBench, two hundred constant-perturbed
@@ -134,7 +136,7 @@ rows are repositories, each yielding many task instances at collection time.
 <a href="https://arxiv.org/pdf/2412.21139">SWE-Gym</a></li>
 </ul>
 
-<h2><span class="n">3</span>End-to-end accuracy — MLE-bench, in-distribution rubrics<span class="tag part">partial</span></h2>
+<h2><span class="n">3</span>End-to-end accuracy<span class="tag ds">data: MLE-bench &middot; in-distribution</span><span class="tag part">partial</span></h2>
 <p>These rubrics were mined from MLE-bench competitions, so this run is
 <b>in-distribution</b>: the mining and eval competitions are disjoint, but both come from
 MLE-bench. It is a check that the end-to-end loop runs and is measurable, not a held-out
@@ -154,7 +156,8 @@ improvement rate is the better gauge of whether the end-to-end loop is working. 
 full run, once MLE-bench is completely held out, we can use medal rate and the official
 metrics.</p>
 
-<h2><span class="n">4</span>Rubric precision / recall — updated generation pipeline</h2>
+<h2><span class="n">4</span>Rubric precision / recall, updated generation pipeline<span class="tag ds">data: MLE-bench &middot; in-distribution</span></h2>
+<p>These rubrics are also mined from MLE-bench competitions, so they are in-distribution in the same sense as the section above.</p>
 <p>After these end-to-end results, William and I looked through the traces from the run and
 found coverage issues coming from the prompts and the generation pipeline. William improved
 the pipeline by asking the rubric-generation model to focus on coverage and by adding
@@ -162,10 +165,7 @@ filtering steps, which gave much higher P/R. Below is the new rubric database's 
 currently running an end-to-end experiment on these updated, better-coverage rubrics.
 Even with the better generation, the performance rubrics appear saturated.</p>
 <img src="assets/rubric_PR.png" alt="Precision and recall of the updated rubric database">
-<p>As with the section above, these rubrics are mined from MLE-bench competitions and are
-therefore in-distribution.</p>
-
-<h2><span class="n">5</span>Curation speed</h2>
+<h2><span class="n">5</span>Curation speed<span class="tag ds">data: MLE-bench + external</span></h2>
 <p>Measured from the banked run summaries, not estimated. Production figures come from the
 11 MLE-bench collection runs that banked a summary — 42 error and 146 performance rubrics
 over 41.5 pod-hours. Twenty-seven runs were launched; the other sixteen were cancelled
@@ -190,7 +190,7 @@ family one that was graded twice. Pods scale linearly at one competition each, s
 rubrics is roughly 220 pod-hours at the production rate, about seven hours across thirty
 pods, and materially less on the lighter external datasets.</p>
 
-<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
+<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag ds">data: external mining pool</span><span class="tag todo">not started</span></h2>
 <p>Curate 1,000 rubrics distributed uniformly over all thirteen mining datasets and
 evaluate, producing a scaling-law figure with rubric count on the x-axis and end-to-end
 accuracy on the y-axis, plus companion panels for error and performance precision and
@@ -202,7 +202,7 @@ because the medal fields postdate that code snapshot and the per-attempt rows we
 by an artifact-glob bug. Both are fixed, so a rerun yields the metric comparable to
 published MLE-bench numbers.</p>
 
-<h2><span class="n">7</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
+<h2><span class="n">7</span>Next: collect externally, evaluate held out<span class="tag ds">data: external &rarr; held-out benchmarks</span><span class="tag todo">not started</span></h2>
 <p>Collection now runs end to end on the external domains, verified on DSBench (five and
 four performance rubrics on two tasks) and on kernels (six), with error rubrics in both.
 The next step is to collect rubrics from the other sources in the table above — DA-Code, InfiAgent-DABench, DSBench, MLGym, MLAgentBench, RE-Bench, TritonBench, FastKernels, GPU MODE reference-kernels, BackendBench, SWE-Gym and SWE-smith — and then run end-to-end on those, building <code>rubric_db_mle</code>,
