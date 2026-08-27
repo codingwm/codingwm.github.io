@@ -78,38 +78,44 @@ predate current model cutoffs.</p>
 behind the strongest reported results</li>
 </ul>
 
-<h2><span class="n">2</span>Benchmarks, grouped by discipline</h2>
+<h2><span class="n">2</span>Benchmarks and mining datasets, by discipline</h2>
 <p>Three disciplines, each with one benchmark held out for evaluation and the rest used only
-for mining. Task counts for mining sources are after the leakage filter.</p>
+for mining. Mining counts are after the leakage filter, which removed nine exact MLE-bench
+competitions sitting inside DSBench and MLAgentBench, two hundred constant-perturbed
+KernelBench copies inside robust-kbench, and flask and sympy inside SWE-smith's own repo
+profiles.</p>
 <table class="disc">
-<thead><tr><th>discipline</th><th>benchmark</th><th class="n">tasks</th><th>role</th></tr></thead>
+<thead><tr><th>discipline</th><th>benchmark</th><th class="n">tasks</th><th>role</th><th>task source</th></tr></thead>
 <tbody>
 <tr class="g"><td rowspan="7">ML&nbsp;engineering<br><span class="s">&amp; data science</span></td>
-    <td><b>MLE-bench</b></td><td class="n">75</td><td class="h">held out</td></tr>
-<tr><td>DA-Code</td><td class="n">500</td><td>mining</td></tr>
-<tr><td>InfiAgent-DABench</td><td class="n">257</td><td>mining</td></tr>
-<tr><td>DSBench</td><td class="n">66</td><td>mining</td></tr>
-<tr><td>MLGym</td><td class="n">19</td><td>mining</td></tr>
-<tr><td>MLAgentBench</td><td class="n">14</td><td>mining</td></tr>
-<tr class="last"><td>RE-Bench</td><td class="n">7</td><td>mining</td></tr>
+    <td><b>MLE-bench</b></td><td class="n">75</td><td class="h">held out</td><td>human · Kaggle</td></tr>
+<tr><td>DA-Code</td><td class="n">500</td><td>mining</td><td>human</td></tr>
+<tr><td>InfiAgent-DABench</td><td class="n">257</td><td>mining</td><td>human CSVs · synthetic questions</td></tr>
+<tr><td>DSBench</td><td class="n">66</td><td>mining</td><td>human · Kaggle, re-split</td></tr>
+<tr><td>MLGym</td><td class="n">19</td><td>mining</td><td>human</td></tr>
+<tr><td>MLAgentBench</td><td class="n">14</td><td>mining</td><td>human</td></tr>
+<tr class="last"><td>RE-Bench</td><td class="n">7</td><td>mining</td><td>human · expert-authored</td></tr>
 
 <tr class="g"><td rowspan="6">GPU&nbsp;kernels</td>
-    <td><b>KernelBench</b></td><td class="n">270</td><td class="h">held out</td></tr>
-<tr><td>TritonBench</td><td class="n">55</td><td>mining</td></tr>
-<tr><td>FastKernels</td><td class="n">47</td><td>mining</td></tr>
-<tr><td>GPU MODE reference-kernels</td><td class="n">42</td><td>mining</td></tr>
-<tr><td>BackendBench</td><td class="n">26</td><td>mining</td></tr>
-<tr class="last"><td>robust-kbench</td><td class="n">11</td><td>mining</td></tr>
+    <td><b>KernelBench</b></td><td class="n">270</td><td class="h">held out</td><td>human</td></tr>
+<tr><td>TritonBench</td><td class="n">55</td><td>mining</td><td>human</td></tr>
+<tr><td>FastKernels</td><td class="n">47</td><td>mining</td><td>human · production archs</td></tr>
+<tr><td>GPU MODE reference-kernels</td><td class="n">42</td><td>mining</td><td>human · competition</td></tr>
+<tr><td>BackendBench</td><td class="n">26</td><td>mining</td><td>human · PyTorch aten ops</td></tr>
+<tr class="last"><td>robust-kbench</td><td class="n">11</td><td>mining</td><td>human</td></tr>
 
 <tr class="g"><td rowspan="3">Software&nbsp;engineering</td>
-    <td><b>SWE-bench</b></td><td class="n">12 repos</td><td class="h">held out</td></tr>
-<tr><td>SWE-smith</td><td class="n">131 repos</td><td>mining</td></tr>
-<tr class="last"><td>SWE-Gym</td><td class="n">11 repos</td><td>mining</td></tr>
+    <td><b>SWE-bench</b></td><td class="n">12 repos</td><td class="h">held out</td><td>human · real issues</td></tr>
+<tr><td>SWE-smith</td><td class="n">131 repos</td><td>mining</td><td><b>synthetic</b> · LM-injected bugs</td></tr>
+<tr class="last"><td>SWE-Gym</td><td class="n">11 repos</td><td>mining</td><td>human · real issues/PRs</td></tr>
 </tbody></table>
-<p>Held-out sizes are the published ones. Mining counts come from our own enumeration of
-each repository at a pinned commit and can differ from a paper's headline figure, since a
+<p>1,176 mining units in total. Everything is human-authored except SWE-smith, the one large
+synthetic block, which matters because LM-injected bugs need not resemble real failure
+modes. Held-out sizes are the published figures; mining counts are our own enumeration of
+each repository at a pinned commit and can differ from a paper's headline number, since a
 paper may count individual operators or questions where the repo ships grouped suites. SWE
-rows are repositories, each of which yields many task instances at collection time.</p>
+rows are repositories, each yielding many task instances at collection time.
+<a href="assets/mining_datasets.png">Full inventory as an image &rarr;</a></p>
 <ul class="src">
 <li>Held out — <a href="https://arxiv.org/abs/2410.07095">MLE-bench</a> ·
 <a href="https://arxiv.org/abs/2502.10517">KernelBench</a> ·
@@ -128,18 +134,7 @@ rows are repositories, each of which yields many task instances at collection ti
 <a href="https://arxiv.org/pdf/2412.21139">SWE-Gym</a></li>
 </ul>
 
-<h2><span class="n">3</span>Training (mining) datasets</h2>
-<p>Thirteen datasets, 1,176 mining units, all counts post-leakage-filter and read from the
-frozen pool manifests at render time. The filter removed nine exact MLE-bench competitions
-sitting inside DSBench and MLAgentBench, two hundred constant-perturbed KernelBench copies
-inside robust-kbench, and flask and sympy inside SWE-smith's own repo profiles. Everything
-is human-authored except SWE-smith, whose bugs are LM-injected — the one large synthetic
-block, and worth stating plainly since synthetic bugs need not resemble real failure modes.
-SWE rows count repositories rather than task instances, so they are not directly comparable
-to the task counts above them.</p>
-<img src="assets/mining_datasets.png" alt="Mining dataset inventory table">
-
-<h2><span class="n">4</span>End-to-end accuracy, current state<span class="tag part">partial</span></h2>
+<h2><span class="n">3</span>End-to-end accuracy, current state<span class="tag part">partial</span></h2>
 <img src="assets/e2e_stage_arms_labeled.png" alt="Wall-clock e2e results by scaling stage">
 <div class="kpi">
 <div><div class="v">38.8%</div><div class="l">interpreter improved (88/227)</div></div>
@@ -163,7 +158,7 @@ common to every stage the same arm swings &plusmn;11 points at fixed sample size
 to 5 are incomplete (15/17, 22/24, 26/29) and the missing competitions are the hard ones.
 Medal rate is absent for this campaign, so this is not the published MLE-bench metric.</p></div>
 
-<h2><span class="n">5</span>Curation speed</h2>
+<h2><span class="n">4</span>Curation speed</h2>
 <table>
 <thead><tr><th>regime</th><th class="n">rubrics / pod-hour</th><th>conditions</th></tr></thead>
 <tbody>
@@ -177,7 +172,7 @@ Pods scale linearly at one competition each, so 1,000 rubrics is about 220 pod-h
 production rate, roughly seven hours across thirty pods, and materially less on the lighter
 external datasets that dominate the mining pool.</p>
 
-<h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
+<h2><span class="n">5</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag todo">not started</span></h2>
 <p>Curate 1,000 rubrics distributed uniformly over all thirteen mining datasets and
 evaluate, producing a scaling-law figure with rubric count on the x-axis and end-to-end
 accuracy on the y-axis, plus companion panels for error and performance precision and
@@ -189,7 +184,7 @@ because the medal fields postdate that code snapshot and the per-attempt rows we
 by an artifact-glob bug. Both are fixed, so a rerun yields the metric comparable to
 published MLE-bench numbers.</p>
 
-<h2><span class="n">7</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
+<h2><span class="n">6</span>Next: collect on the held-out-safe pools, then re-run e2e<span class="tag todo">not started</span></h2>
 <p>Collection now runs end to end on the external domains, verified on DSBench (five and
 four performance rubrics on two tasks) and on kernels (six), with error rubrics in both.
 The sequence is to mine across DA-Code, DSBench, InfiAgent-DABench, TritonBench,
