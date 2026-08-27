@@ -29,6 +29,14 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
 th,td{border-bottom:1px solid var(--grid);padding:7px 10px 7px 0;text-align:left;vertical-align:top}
 th{color:var(--ink2);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+table.disc td,table.disc th{border-bottom:none;padding:5px 14px 5px 0}
+table.disc tr.g td{border-top:1px solid var(--grid);padding-top:9px}
+table.disc tr.last td{padding-bottom:9px}
+table.disc td:first-child{color:var(--ink);font-weight:600;vertical-align:middle;
+ border-right:1px solid var(--grid);padding-right:18px}
+table.disc .s{font-weight:400;color:var(--ink2);font-size:12px}
+table.disc .h{color:var(--accent);font-weight:600}
+table.disc td.n{width:90px}
 img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
 .note{border-left:3px solid var(--accent);padding:2px 0 2px 14px;margin:14px 0}
 .note.warn{border-left-color:var(--todo)}
@@ -70,48 +78,55 @@ predate current model cutoffs.</p>
 behind the strongest reported results</li>
 </ul>
 
-<h2><span class="n">2</span>Benchmarks used by this literature<span class="tag done">table</span></h2>
-<table>
-<thead><tr><th>benchmark</th><th class="n">samples</th><th>type</th><th>role for us</th></tr></thead>
+<h2><span class="n">2</span>Benchmarks, grouped by discipline</h2>
+<p>Three disciplines, each with one benchmark held out for evaluation and the rest used only
+for mining. Task counts for mining sources are after the leakage filter.</p>
+<table class="disc">
+<thead><tr><th>discipline</th><th>benchmark</th><th class="n">tasks</th><th>role</th></tr></thead>
 <tbody>
-<tr><td>MLE-bench</td><td class="n">75 competitions</td><td>ML engineering, end-to-end</td><td><b>held out — eval only</b></td></tr>
-<tr><td>KernelBench</td><td class="n">270 problems (L1 100 / L2 100 / L3 50 / L4 20)</td><td>GPU kernel generation</td><td><b>held out — eval only</b></td></tr>
-<tr><td>SWE-bench</td><td class="n">2,294 instances over 12 repos</td><td>software engineering (issue → patch)</td><td><b>held out — eval only</b></td></tr>
-<tr><td>DSBench</td><td class="n">74 modeling + 466 analysis</td><td>data science, Kaggle-derived</td><td>mining pool (modeling half)</td></tr>
-<tr><td>DA-Code</td><td class="n">500 tasks</td><td>data science / agentic</td><td>mining pool</td></tr>
-<tr><td>InfiAgent-DABench</td><td class="n">257 questions over 52 CSVs</td><td>data analysis, closed-form</td><td>mining pool</td></tr>
-<tr><td>MLAgentBench</td><td class="n">13&ndash;14 tasks</td><td>ML research / agentic</td><td>mining pool</td></tr>
-<tr><td>MLGym</td><td class="n">13 tasks (19 configs)</td><td>ML research gym</td><td>mining pool</td></tr>
-<tr><td>RE-Bench</td><td class="n">7 tasks</td><td>AI R&amp;D, expert-authored</td><td>mining pool</td></tr>
-<tr><td>TritonBench</td><td class="n">55 operator suites</td><td>Triton kernels</td><td>mining pool</td></tr>
-<tr><td>GPU MODE reference-kernels</td><td class="n">42 problems</td><td>GPU kernel competition</td><td>mining pool</td></tr>
-<tr><td>BackendBench</td><td class="n">26 op groups</td><td>PyTorch aten ops</td><td>mining pool</td></tr>
-<tr><td>SWE-Gym</td><td class="n">2,438 instances over 11 repos</td><td>software engineering</td><td>mining pool</td></tr>
-<tr><td>SWE-smith</td><td class="n">133 repos (synthetic bugs)</td><td>software engineering</td><td>mining pool</td></tr>
+<tr class="g"><td rowspan="7">ML&nbsp;engineering<br><span class="s">&amp; data science</span></td>
+    <td><b>MLE-bench</b></td><td class="n">75</td><td class="h">held out</td></tr>
+<tr><td>DA-Code</td><td class="n">500</td><td>mining</td></tr>
+<tr><td>InfiAgent-DABench</td><td class="n">257</td><td>mining</td></tr>
+<tr><td>DSBench</td><td class="n">66</td><td>mining</td></tr>
+<tr><td>MLGym</td><td class="n">19</td><td>mining</td></tr>
+<tr><td>MLAgentBench</td><td class="n">14</td><td>mining</td></tr>
+<tr class="last"><td>RE-Bench</td><td class="n">7</td><td>mining</td></tr>
+
+<tr class="g"><td rowspan="6">GPU&nbsp;kernels</td>
+    <td><b>KernelBench</b></td><td class="n">270</td><td class="h">held out</td></tr>
+<tr><td>TritonBench</td><td class="n">55</td><td>mining</td></tr>
+<tr><td>FastKernels</td><td class="n">47</td><td>mining</td></tr>
+<tr><td>GPU MODE reference-kernels</td><td class="n">42</td><td>mining</td></tr>
+<tr><td>BackendBench</td><td class="n">26</td><td>mining</td></tr>
+<tr class="last"><td>robust-kbench</td><td class="n">11</td><td>mining</td></tr>
+
+<tr class="g"><td rowspan="3">Software&nbsp;engineering</td>
+    <td><b>SWE-bench</b></td><td class="n">12 repos</td><td class="h">held out</td></tr>
+<tr><td>SWE-smith</td><td class="n">131 repos</td><td>mining</td></tr>
+<tr class="last"><td>SWE-Gym</td><td class="n">11 repos</td><td>mining</td></tr>
 </tbody></table>
-<h3>Sources</h3>
+<p>Held-out sizes are the published ones. Mining counts come from our own enumeration of
+each repository at a pinned commit and can differ from a paper's headline figure, since a
+paper may count individual operators or questions where the repo ships grouped suites. SWE
+rows are repositories, each of which yields many task instances at collection time.</p>
 <ul class="src">
-<li>MLE-bench <a href="https://arxiv.org/abs/2410.07095">arXiv:2410.07095</a> ·
-KernelBench <a href="https://arxiv.org/abs/2502.10517">arXiv:2502.10517</a> ·
-SWE-bench <a href="https://arxiv.org/abs/2310.06770">arXiv:2310.06770</a></li>
-<li>DSBench <a href="https://arxiv.org/abs/2409.07703">arXiv:2409.07703</a> ·
-DA-Code <a href="https://arxiv.org/pdf/2504.04808">arXiv:2504.04808</a> ·
-InfiAgent-DABench <a href="https://arxiv.org/pdf/2401.05507">arXiv:2401.05507</a></li>
-<li>MLAgentBench <a href="https://arxiv.org/abs/2310.03302">arXiv:2310.03302</a> ·
-MLGym <a href="https://arxiv.org/abs/2502.14499">arXiv:2502.14499</a> ·
-RE-Bench <a href="https://arxiv.org/abs/2411.15114">arXiv:2411.15114</a></li>
-<li>TritonBench <a href="https://arxiv.org/pdf/2502.14752">arXiv:2502.14752</a> ·
-FastKernels <a href="https://arxiv.org/pdf/2605.23215">arXiv:2605.23215</a> ·
-GPU MODE <a href="https://github.com/gpu-mode/reference-kernels">reference-kernels</a> ·
+<li>Held out — <a href="https://arxiv.org/abs/2410.07095">MLE-bench</a> ·
+<a href="https://arxiv.org/abs/2502.10517">KernelBench</a> ·
+<a href="https://arxiv.org/abs/2310.06770">SWE-bench</a></li>
+<li>ML / data science — <a href="https://arxiv.org/pdf/2504.04808">DA-Code</a> ·
+<a href="https://arxiv.org/pdf/2401.05507">InfiAgent-DABench</a> ·
+<a href="https://arxiv.org/abs/2409.07703">DSBench</a> ·
+<a href="https://arxiv.org/abs/2502.14499">MLGym</a> ·
+<a href="https://arxiv.org/abs/2310.03302">MLAgentBench</a> ·
+<a href="https://arxiv.org/abs/2411.15114">RE-Bench</a></li>
+<li>Kernels — <a href="https://arxiv.org/pdf/2502.14752">TritonBench</a> ·
+<a href="https://arxiv.org/pdf/2605.23215">FastKernels</a> ·
+<a href="https://github.com/gpu-mode/reference-kernels">GPU MODE</a> ·
 <a href="https://github.com/meta-pytorch/BackendBench">BackendBench</a></li>
-<li>SWE-Gym <a href="https://arxiv.org/pdf/2412.21139">arXiv:2412.21139</a> ·
-SWE-smith <a href="https://arxiv.org/pdf/2504.21798">arXiv:2504.21798</a> ·
-R2E-Gym <a href="https://arxiv.org/pdf/2504.07164">arXiv:2504.07164</a></li>
+<li>Software engineering — <a href="https://arxiv.org/pdf/2504.21798">SWE-smith</a> ·
+<a href="https://arxiv.org/pdf/2412.21139">SWE-Gym</a></li>
 </ul>
-<p><b>Counts marked as suites / configs / op groups are our own enumeration of the
-released repositories</b> at the pinned SHAs, which can differ from a paper's headline
-figure (a paper may count individual operators where the repo ships grouped suites).
-Held-out sizes are the published ones.</p>
 
 <h2><span class="n">3</span>Training (mining) datasets</h2>
 <p>Thirteen datasets, 1,176 mining units, all counts post-leakage-filter and read from the
