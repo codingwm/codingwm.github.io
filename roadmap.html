@@ -142,7 +142,27 @@ rows are repositories, each yielding many task instances at collection time.
 <b>in-distribution</b>: the mining and eval competitions are disjoint, but both come from
 MLE-bench. It is a check that the end-to-end loop runs and is measurable, not a held-out
 result.</p>
+<h3>Setup</h3>
+<p>Each trial takes one held-out MLE-bench program that has already been executed and
+graded, hands it to a coding agent, and gives that agent <b>30 minutes of wall clock</b> to
+produce better code. Five arms differ only in what feedback the agent gets each turn:
+<b>revise</b> gets none (the floor), <b>interpreter</b> executes the code and reads the real
+traceback, <b>world model</b> retrieves rubrics and has a reward model judge which are
+violated without ever executing, <b>WM + patch</b> applies the rubric's suggested edit
+directly, and <b>race</b> runs the world model against a real execution and uses whichever
+answers first. The clock is the only budget, so a fast feedback channel buys more turns —
+the world model gets roughly 50 turns where the interpreter gets 3&ndash;15. At the deadline
+each arm submits its best version chosen by its own signal, never by the true score, and
+that submission is executed once and graded by the official MLE-bench grader outside the
+budget.</p>
 <img src="assets/e2e_stage_arms_labeled.png" alt="Wall-clock e2e results by scaling stage">
+<h3>Reading the figure</h3>
+<p>Each group on the <b>x-axis</b> is one rubric database, labelled by its mining/eval
+competition split and its error and performance rubric counts; the groups run from a
+151-rubric database up to 708. Within a group the five bars are the five arms. The
+<b>y-axis is improvement rate</b>: the percent of trials where the submitted code scored
+better than the seed program it started from. A dashed rule separates an earlier
+old-library run kept for reference, whose competition set differs from the staged ones.</p>
 <p>Last Saturday's end-to-end run, using the rubrics presented that day, finished two days
 ago. We are lagging slightly behind interpreter-only, controlling for wall clock so every
 arm gets 30 minutes. The higher numbers in the earlier stages are mainly an artifact of
@@ -165,7 +185,21 @@ the pipeline by asking the rubric-generation model to focus on coverage and by a
 filtering steps, which gave much higher P/R. Below is the new rubric database's P/R. We are
 currently running an end-to-end experiment on these updated, better-coverage rubrics.
 Even with the better generation, the performance rubrics appear saturated.</p>
+<h3>Setup</h3>
+<p>This measures the rubrics themselves rather than an agent. Each rubric is shown to a
+judge together with a held-out program and the static facts available before that program
+ran — the data files, their columns, the installed packages — but never the program's
+output. The judge decides whether the rubric fires. Truth comes from what actually happened
+when the program was executed: for the <b>error</b> family, whether the interpreter raised
+the exception class the rubric predicted; for the <b>performance</b> family, whether
+annotators credited that criterion for a measured score gap between two programs. Timeouts
+and environment kills are excluded, since no static rubric can predict them.</p>
 <img src="assets/rubric_PR.png" alt="Precision and recall of the updated rubric database">
+<h3>Reading the figure</h3>
+<p><b>Precision</b> is the share of firings that were correct — how often a rubric that
+flagged a program was right about it. <b>Recall</b> is the share of real failures that some
+rubric caught. Both are reported separately for the error and performance families, since
+they answer different questions and are judged against different truth.</p>
 <h2><span class="n">5</span>Curation speed<span class="tag ds">data: MLE-bench + external</span></h2>
 <table>
 <thead><tr><th>regime</th><th class="n">error / pod-hr</th><th class="n">perf / pod-hr</th><th class="n">combined</th></tr></thead>
