@@ -166,29 +166,54 @@ currently running an end-to-end experiment on these updated, better-coverage rub
 Even with the better generation, the performance rubrics appear saturated.</p>
 <img src="assets/rubric_PR.png" alt="Precision and recall of the updated rubric database">
 <h2><span class="n">5</span>Curation speed<span class="tag ds">data: MLE-bench + external</span></h2>
-<p>Measured from the banked run summaries, not estimated. Production figures come from the
-11 MLE-bench collection runs that banked a summary — 42 error and 146 performance rubrics
-over 41.5 pod-hours. Twenty-seven runs were launched; the other sixteen were cancelled
-before finishing, so this sample is biased toward runs that completed, and none of the
-eleven reached its rubric target (all were cut short by the program cap or the clock). Four
-of the eleven produced zero performance rubrics: they are the heavy image competitions
-where no program was graded twice. External-domain figures come from the four DSBench and
-kernel test runs, 0.35 pod-hours in total.</p>
 <table>
 <thead><tr><th>regime</th><th class="n">error / pod-hr</th><th class="n">perf / pod-hr</th><th class="n">combined</th></tr></thead>
 <tbody>
-<tr><td>Production MLE-bench competitions <span class="s">(3600 s cap, &le;40 programs)</span></td>
+<tr><td>MLE-bench <span class="s">(3600 s cap, &le;40 programs)</span></td>
     <td class="n">1.0</td><td class="n">3.5</td><td class="n">4.5</td></tr>
-<tr><td>External domains <span class="s">(DSBench + kernels, 900 s cap, &le;8 programs)</span></td>
+<tr><td>External <span class="s">(DSBench + kernels, 900 s cap, &le;8 programs)</span></td>
     <td class="n">20.0</td><td class="n">42.9</td><td class="n">63.0</td></tr>
 </tbody></table>
-<p>Performance rubrics come roughly three times faster than error rubrics in both regimes,
-since a hill-climb turn yields a candidate pair on every graded program whereas an error
-rubric needs a program that actually crashed. Overall throughput is set by task execution
-cost rather than by curation: a rubric requires a program that ran, and for the performance
-family one that was graded twice. Pods scale linearly at one competition each, so 1,000
-rubrics is roughly 220 pod-hours at the production rate, about seven hours across thirty
-pods, and materially less on the lighter external datasets.</p>
+
+<h3>Where the time goes</h3>
+<table>
+<thead><tr><th>component</th><th class="n">seconds</th><th class="n">share of wall</th></tr></thead>
+<tbody>
+<tr><td><b>GPU execution</b> of candidate programs</td><td class="n">140,674</td><td class="n"><b>94%</b></td></tr>
+<tr><td>LLM generation + curation + overhead</td><td class="n">8,884</td><td class="n">6%</td></tr>
+</tbody></table>
+<p>Curation is not the bottleneck — execution is. Median <b>267 s of GPU time per program</b>
+and <b>302 s per rubric</b>, but spread over two orders of magnitude:</p>
+<table>
+<thead><tr><th>competition</th><th class="n">GPU s / rubric</th><th class="n">rubrics</th></tr></thead>
+<tbody>
+<tr><td>random-acts-of-pizza</td><td class="n">26</td><td class="n">22</td></tr>
+<tr><td>statoil-iceberg</td><td class="n">54</td><td class="n">30</td></tr>
+<tr><td>stanford-covid-vaccine</td><td class="n">302</td><td class="n">36</td></tr>
+<tr><td>dog-breed-identification</td><td class="n">1,116</td><td class="n">22</td></tr>
+<tr><td>nyc-taxi-fare</td><td class="n">1,755</td><td class="n">18</td></tr>
+<tr><td>vesuvius-ink-detection</td><td class="n">3,811</td><td class="n">8</td></tr>
+</tbody></table>
+<p>Four of eleven runs (AI4Code, osic, uw-madison, vesuvius) spent 34,787 GPU-seconds for
+<b>zero</b> performance rubrics: no program was graded twice, so no better/worse pair
+exists. 27 runs were launched, 11 banked a summary, none reached its rubric target.</p>
+
+<h3>Scaling levers, by measured payoff</h3>
+<table>
+<thead><tr><th>lever</th><th class="n">effect</th><th>basis</th></tr></thead>
+<tbody>
+<tr><td>Re-mine the 3,355 already-executed states on disk</td><td class="n">~20&ndash;50&times;</td>
+    <td>costs only the 6% slice; 1,431 error states, 802 graded, corpus not exhausted</td></tr>
+<tr><td>Mine external tasks instead of MLE-bench</td><td class="n">14&times;</td>
+    <td>63.0 vs 4.5 rubrics/pod-hr, measured</td></tr>
+<tr><td>Cap mining execution (~300 s + subsampling)</td><td class="n">~10&times;</td>
+    <td>crashes surface at a median 11 s; needs a fidelity check for perf pairs</td></tr>
+<tr><td>Abandon a competition with no graded pair after N min</td><td class="n">reclaims 23%</td>
+    <td>34,787 of 149,558 s produced no perf rubric</td></tr>
+<tr><td>Cross-program perf pairs instead of hill-climbing</td><td class="n">removes 1 run/turn</td>
+    <td>802 graded states already exist; weaker evidence, needs measuring</td></tr>
+<tr><td>More pods</td><td class="n">linear</td><td>one competition per pod</td></tr>
+</tbody></table>
 
 <h2><span class="n">6</span>Next: 1,000 rubrics uniformly across the mining pool<span class="tag ds">data: external mining pool</span><span class="tag todo">not started</span></h2>
 <p>Curate 1,000 rubrics distributed uniformly over all thirteen mining datasets and
