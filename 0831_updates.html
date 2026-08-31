@@ -30,12 +30,13 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <p class="sub">New agent architecture &middot; SWE-bench scaling &middot; MLE-bench scaling</p>
 
 <h2><span class="n">1</span>We changed to this agent architecture</h2>
-<p>The harness is now <a href="https://github.com/EdwardoSunny/cwm-agent">cwm-agent</a>, a
-minimal backend-only clone of mini-swe-agent: an LLM in a loop with a single <code>bash</code>
-tool, each command in a fresh subshell inside the benchmark's official sandbox. The world
-model is purely an <b>environment swap</b> — commands still execute for their side effects,
-but the agent's observation is the CWM's rubric grading of the current <code>git diff</code>
-instead of the interpreter output. Agent, model and submission code are identical across arms.</p>
+<p>The architecture is fully modularized: the agent loop, the model wrapper, the execution
+environment and the submission mode are independent pieces, so any one swaps without touching
+the others. Execution environments are interchangeable — <b>Modal cloud sandboxes or Docker
+containers</b> — and the world model is just another environment: commands still execute in
+the sandbox for their side effects, but the observation returned to the agent is the
+<b>CWM's rubric grading of the current <code>git diff</code></b> instead of the interpreter
+output. Swapping interpreter &harr; world model changes nothing else.</p>
 
 <div class="fig">
 <svg viewBox="0 0 960 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial" font-size="13">
@@ -50,17 +51,17 @@ instead of the interpreter output. Agent, model and submission code are identica
 
   <!-- row 1: task -> agent -> sandbox -->
   <rect x="30" y="30" width="190" height="64" rx="9" fill="#f6f5f0" stroke="#c3c2b7"/>
-  <text x="125" y="55" text-anchor="middle" font-weight="600" fill="#0b0b0b">SWE-bench instance</text>
-  <text x="125" y="73" text-anchor="middle" fill="#6b6a65" font-size="11">PR description + official image</text>
+  <text x="125" y="55" text-anchor="middle" font-weight="600" fill="#0b0b0b">Task &#8212; any competition</text>
+  <text x="125" y="73" text-anchor="middle" fill="#6b6a65" font-size="11">description + official image</text>
 
   <rect x="290" y="22" width="250" height="80" rx="9" fill="#e3edfb" stroke="#2a78d6" stroke-width="1.5"/>
-  <text x="415" y="45" text-anchor="middle" font-weight="700" fill="#1b4f91">&#9312; Agent (Haiku 4.5)</text>
+  <text x="415" y="45" text-anchor="middle" font-weight="700" fill="#1b4f91">&#9312; Coding agent (LLM)</text>
   <text x="415" y="63" text-anchor="middle" fill="#3a3a37" font-size="11">one bash tool &#183; linear message history</text>
   <text x="415" y="79" text-anchor="middle" fill="#6b6a65" font-size="11">limits: 250 steps &#183; $3 &#183; 3 format errors</text>
 
   <rect x="620" y="22" width="310" height="80" rx="9" fill="#fff" stroke="#0b0b0b"/>
   <text x="775" y="45" text-anchor="middle" font-weight="600" fill="#0b0b0b">&#9313; Sandbox (Modal / Docker)</text>
-  <text x="775" y="63" text-anchor="middle" fill="#3a3a37" font-size="11">fresh subshell per command in /testbed</text>
+  <text x="775" y="63" text-anchor="middle" fill="#3a3a37" font-size="11">fresh subshell per command in the task workdir</text>
   <text x="775" y="79" text-anchor="middle" fill="#6b6a65" font-size="11">command ALWAYS runs &#8212; side effects persist</text>
 
   <line x1="220" y1="62" x2="286" y2="62" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -76,16 +77,15 @@ instead of the interpreter output. Agent, model and submission code are identica
 
   <!-- interpreter lane -->
   <rect x="150" y="170" width="360" height="86" rx="9" fill="#fdeaea" stroke="#e34948" stroke-width="2"/>
-  <text x="330" y="193" text-anchor="middle" font-weight="700" fill="#b02a2a">interpreter feedback (baseline)</text>
-  <text x="330" y="213" text-anchor="middle" fill="#3a3a37" font-size="11">returncode + real output (10k-char cap)</text>
-  <text x="330" y="231" text-anchor="middle" fill="#6b6a65" font-size="11">72.4% resolved</text>
+  <text x="330" y="200" text-anchor="middle" font-weight="700" fill="#b02a2a">interpreter feedback (baseline)</text>
+  <text x="330" y="222" text-anchor="middle" fill="#3a3a37" font-size="11">returncode + real output (10k-char cap)</text>
 
   <!-- CWM lane -->
   <rect x="580" y="170" width="360" height="120" rx="9" fill="#e2f5ee" stroke="#1baf7a" stroke-width="2"/>
   <text x="760" y="192" text-anchor="middle" font-weight="700" fill="#0a7a45">&#9314; CWM feedback (world model)</text>
   <text x="760" y="212" text-anchor="middle" fill="#3a3a37" font-size="11">git diff of the change set &#8594; top-k rubrics</text>
-  <text x="760" y="228" text-anchor="middle" fill="#3a3a37" font-size="11">(embedding cosine over swe-rubrics-10/100/1000)</text>
-  <text x="760" y="244" text-anchor="middle" fill="#3a3a37" font-size="11">&#8594; Opus 5 grades each 0/1 without executing</text>
+  <text x="760" y="228" text-anchor="middle" fill="#3a3a37" font-size="11">(embedding cosine over the mined rubric library)</text>
+  <text x="760" y="244" text-anchor="middle" fill="#3a3a37" font-size="11">&#8594; an LLM grader marks each 0/1 without executing</text>
   <text x="760" y="262" text-anchor="middle" fill="#6b6a65" font-size="11">agent sees violated criteria + predicted reward;</text>
   <text x="760" y="277" text-anchor="middle" fill="#6b6a65" font-size="11">interpreter output hidden, returncode kept</text>
 
@@ -100,13 +100,13 @@ instead of the interpreter output. Agent, model and submission code are identica
   <text x="346" y="300" fill="#6b6a65" font-size="11">loop done</text>
   <text x="776" y="316" fill="#6b6a65" font-size="11">loop done</text>
   <rect x="150" y="334" width="790" height="58" rx="9" fill="#fdf3dd" stroke="#eda100" stroke-width="2"/>
-  <text x="545" y="357" text-anchor="middle" font-weight="700" fill="#a5670a">&#9315; explicit submit &#8212; passes through the swap untouched</text>
-  <text x="545" y="376" text-anchor="middle" fill="#3a3a37" font-size="11.5">echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT &amp;&amp; cat patch.txt</text>
+  <text x="545" y="357" text-anchor="middle" font-weight="700" fill="#a5670a">&#9315; submit &#8212; passes through the swap untouched</text>
+  <text x="545" y="376" text-anchor="middle" fill="#3a3a37" font-size="11.5">explicit sentinel command, or the artifact (patch / submission file) collected at stop</text>
 
   <!-- row 4: grading -->
   <line x1="545" y1="392" x2="545" y2="418" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
   <rect x="290" y="422" width="510" height="42" rx="9" fill="#f6f5f0" stroke="#0b0b0b" stroke-width="1.5"/>
-  <text x="545" y="448" text-anchor="middle" font-weight="600" fill="#0b0b0b">preds.json &#8594; official SWE-bench grading (sb-cli)</text>
+  <text x="545" y="448" text-anchor="middle" font-weight="600" fill="#0b0b0b">final artifact &#8594; the benchmark's official grader</text>
 </svg>
 </div>
 

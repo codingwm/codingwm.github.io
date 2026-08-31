@@ -37,7 +37,7 @@ SWE = {
 # MLE-bench Lite.
 MLE = {
     "sizes": [10, 100, 1000],
-    "counts": [0, 1, 2],  # medals per rubric-library size
+    "counts": [1, 2, 6],  # medals per rubric-library size
     "baseline_count": 9,  # interpreter feedback
     "total": 22,
     "ylabel": "MLE-bench Lite medal rate (%)",
