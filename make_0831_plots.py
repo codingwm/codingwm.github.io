@@ -18,12 +18,15 @@ from matplotlib.ticker import FixedLocator
 SURFACE, INK, INK2, MUTED = "#fcfcfb", "#0b0b0b", "#52514e", "#898781"
 GRID, AXIS, SERIES = "#e1e0d9", "#c3c2b7", "#2a78d6"
 
-# SWE-bench Verified: hand-edit the rates/baseline below, then rerun this script.
-# (cwm10/cwm100/baseline match the official grading reports in cwm-agent.)
+# Hand-edit the resolved counts below, then rerun this script. Every value is a
+# whole-number count out of `total`; the percent is computed, and labels show both.
+
+# SWE-bench Verified (cwm10/cwm100/baseline match the official grading reports in cwm-agent).
 SWE = {
     "sizes": [15, 227, 1006],
-    "rates": [100 * 58 / 500, 100 * 56 / 500, 100 * 185 / 500],
-    "baseline": 100 * 362 / 500,  # haiku45-final.json (interpreter feedback)
+    "counts": [58, 56, 185],  # resolved instances per rubric-library size
+    "baseline_count": 362,  # interpreter feedback (haiku45-final.json)
+    "total": 500,
     "ylabel": "SWE-bench Verified resolved (%)",
     "title": "SWE-bench Verified — resolve rate vs rubric library size",
     "subtitle": "Haiku 4.5 agent, 500 instances per point, top-15 retrieval, Opus 5 grader",
@@ -31,11 +34,12 @@ SWE = {
     "out": "assets/rubric-scaling-swe.png",
 }
 
-# MLE-bench Lite: hand-edit the rates/baseline below, then rerun this script.
+# MLE-bench Lite.
 MLE = {
     "sizes": [10, 100, 1000],
-    "rates": [9.1, 13.6, 18.2],
-    "baseline": 22.7,
+    "counts": [2, 3, 4],  # medals per rubric-library size
+    "baseline_count": 5,  # interpreter feedback
+    "total": 22,
     "ylabel": "MLE-bench Lite medal rate (%)",
     "title": "MLE-bench Lite — medal rate vs rubric library size",
     "subtitle": "Haiku 4.5 agent, 22 Lite competitions per point, Opus 5 grader",
@@ -45,7 +49,9 @@ MLE = {
 
 
 def draw(spec: dict):
-    sizes, rates, baseline = spec["sizes"], spec["rates"], spec["baseline"]
+    sizes, counts, total = spec["sizes"], spec["counts"], spec["total"]
+    rates = [100 * c / total for c in counts]
+    baseline = 100 * spec["baseline_count"] / total
 
     fig, ax = plt.subplots(figsize=(7, 4.4), dpi=200)
     fig.patch.set_facecolor(SURFACE)
@@ -54,7 +60,7 @@ def draw(spec: dict):
     # reference line: interpreter feedback (real execution)
     ax.axhline(baseline, color=AXIS, lw=1.5, ls=(0, (5, 4)), zorder=1)
     ax.annotate(
-        f"Interpreter feedback (real execution)  {baseline:.1f}%",
+        f"Interpreter feedback (real execution)  {baseline:.1f}%  ({spec['baseline_count']}/{total})",
         xy=(sizes[0], baseline), xytext=(0, 8), textcoords="offset points",
         color=INK2, fontsize=9.5, va="bottom",
     )
@@ -62,9 +68,10 @@ def draw(spec: dict):
     # the CWM series
     ax.plot(sizes, rates, color=SERIES, lw=2, marker="o", ms=9,
             mfc=SERIES, mec=SURFACE, mew=2, zorder=3)
-    for s, r in zip(sizes, rates):
-        ax.annotate(f"{r:.1f}%", xy=(s, r), xytext=(0, 11), textcoords="offset points",
-                    ha="center", color=INK, fontsize=10)
+    for s, r, c in zip(sizes, rates, counts):
+        ax.annotate(f"{r:.1f}%\n{c}/{total}", xy=(s, r), xytext=(0, 11),
+                    textcoords="offset points", ha="center", va="bottom",
+                    color=INK, fontsize=10, linespacing=1.3)
 
     ax.set_xscale("log")
     ax.xaxis.set_major_locator(FixedLocator(sizes))
