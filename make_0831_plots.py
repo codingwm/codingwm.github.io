@@ -29,7 +29,7 @@ SWE = {
     "total": 500,
     "ylabel": "SWE-bench Verified resolved (%)",
     "title": "SWE-bench Verified — resolve rate vs rubric library size",
-    "subtitle": "Haiku 4.5 agent, 500 instances per point, top-15 retrieval, Opus 5 grader",
+    "subtitle": "Haiku 4.5 agent, 500 instances per point, top-15 retrieval",
     "xlim": (10, 1500),
     "out": "assets/rubric-scaling-swe.png",
 }
@@ -42,7 +42,7 @@ MLE = {
     "total": 22,
     "ylabel": "MLE-bench Lite medal rate (%)",
     "title": "MLE-bench Lite — medal rate vs rubric library size",
-    "subtitle": "Haiku 4.5 agent, 22 Lite competitions per point, Opus 5 grader",
+    "subtitle": "Haiku 4.5 agent, 22 Lite competitions per point",
     "xlim": (7, 1500),
     "out": "assets/rubric-scaling-mle.png",
 }
