@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8/31 updates — CodeWorld GYM</title>
+<style>
+:root{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--accent:#2a78d6}
+@media (prefers-color-scheme:dark){:root{--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--grid:#33322f;--accent:#3987e5}}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--ink);margin:0;padding:40px 24px 80px;
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 34px}
+h2{font-size:19px;margin:44px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--grid)}
+h2 .n{color:var(--ink2);font-weight:400;margin-right:9px}
+p{color:var(--ink2);margin:8px 0}
+a{color:var(--accent)}a:hover{text-decoration:underline}
+b,strong{color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+ background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
+ padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px;
+ background:#fdf1cf;color:#7a5c05}
+@media (prefers-color-scheme:dark){.tag{background:#3d3312;color:#e6cb6b}}
+img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
+.fig{background:#fff;border:1px solid var(--grid);border-radius:8px;padding:14px;margin:14px 0}
+.fig svg{display:block;width:100%;height:auto}
+footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
+ color:var(--ink2);font-size:12.5px}
+</style></head><body><div class="wrap">
+
+<p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a></p>
+
+<h1>8/31 updates</h1>
+<p class="sub">New agent architecture &middot; scaled to SWE-bench &middot; MLE-bench placeholder</p>
+
+<h2><span class="n">1</span>We changed to this agent architecture</h2>
+<p>The harness is now <a href="https://github.com/EdwardoSunny/cwm-agent">cwm-agent</a>, a
+minimal backend-only clone of mini-swe-agent: an LLM in a loop with a single <code>bash</code>
+tool, each command in a fresh subshell inside the benchmark's official sandbox. The world
+model is purely an <b>environment swap</b> — commands still execute for their side effects,
+but the agent's observation is the CWM's rubric grading of the current <code>git diff</code>
+instead of the interpreter output. Agent, model and submission code are identical across arms.</p>
+
+<div class="fig">
+<svg viewBox="0 0 960 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial" font-size="13">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 z" fill="#6b6a65"/>
+    </marker>
+    <marker id="arrb" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 z" fill="#2a78d6"/>
+    </marker>
+  </defs>
+
+  <!-- row 1: task -> agent -> sandbox -->
+  <rect x="30" y="30" width="190" height="64" rx="9" fill="#f6f5f0" stroke="#c3c2b7"/>
+  <text x="125" y="55" text-anchor="middle" font-weight="600" fill="#0b0b0b">SWE-bench instance</text>
+  <text x="125" y="73" text-anchor="middle" fill="#6b6a65" font-size="11">PR description + official image</text>
+
+  <rect x="290" y="22" width="250" height="80" rx="9" fill="#e3edfb" stroke="#2a78d6" stroke-width="1.5"/>
+  <text x="415" y="45" text-anchor="middle" font-weight="700" fill="#1b4f91">&#9312; Agent (Haiku 4.5)</text>
+  <text x="415" y="63" text-anchor="middle" fill="#3a3a37" font-size="11">one bash tool &#183; linear message history</text>
+  <text x="415" y="79" text-anchor="middle" fill="#6b6a65" font-size="11">limits: 250 steps &#183; $3 &#183; 3 format errors</text>
+
+  <rect x="620" y="22" width="310" height="80" rx="9" fill="#fff" stroke="#0b0b0b"/>
+  <text x="775" y="45" text-anchor="middle" font-weight="600" fill="#0b0b0b">&#9313; Sandbox (Modal / Docker)</text>
+  <text x="775" y="63" text-anchor="middle" fill="#3a3a37" font-size="11">fresh subshell per command in /testbed</text>
+  <text x="775" y="79" text-anchor="middle" fill="#6b6a65" font-size="11">command ALWAYS runs &#8212; side effects persist</text>
+
+  <line x1="220" y1="62" x2="286" y2="62" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="540" y1="62" x2="616" y2="62" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="578" y="52" text-anchor="middle" fill="#6b6a65" font-size="11">bash cmd</text>
+
+  <!-- split to the two observation channels -->
+  <line x1="775" y1="102" x2="775" y2="130" stroke="#6b6a65" stroke-width="1.5"/>
+  <line x1="330" y1="130" x2="775" y2="130" stroke="#6b6a65" stroke-width="1.5"/>
+  <line x1="330" y1="130" x2="330" y2="166" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="775" y1="130" x2="775" y2="166" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="552" y="146" text-anchor="middle" fill="#6b6a65" font-size="11">the observation channel &#8212; an env-only swap, one arm or the other</text>
+
+  <!-- interpreter lane -->
+  <rect x="150" y="170" width="360" height="86" rx="9" fill="#fdeaea" stroke="#e34948" stroke-width="2"/>
+  <text x="330" y="193" text-anchor="middle" font-weight="700" fill="#b02a2a">interpreter feedback (baseline)</text>
+  <text x="330" y="213" text-anchor="middle" fill="#3a3a37" font-size="11">returncode + real output (10k-char cap)</text>
+  <text x="330" y="231" text-anchor="middle" fill="#6b6a65" font-size="11">72.4% resolved</text>
+
+  <!-- CWM lane -->
+  <rect x="580" y="170" width="360" height="120" rx="9" fill="#e2f5ee" stroke="#1baf7a" stroke-width="2"/>
+  <text x="760" y="192" text-anchor="middle" font-weight="700" fill="#0a7a45">&#9314; CWM feedback (world model)</text>
+  <text x="760" y="212" text-anchor="middle" fill="#3a3a37" font-size="11">git diff of the change set &#8594; top-k rubrics</text>
+  <text x="760" y="228" text-anchor="middle" fill="#3a3a37" font-size="11">(embedding cosine over swe-rubrics-10/100/1000)</text>
+  <text x="760" y="244" text-anchor="middle" fill="#3a3a37" font-size="11">&#8594; Opus 5 grades each 0/1 without executing</text>
+  <text x="760" y="262" text-anchor="middle" fill="#6b6a65" font-size="11">agent sees violated criteria + predicted reward;</text>
+  <text x="760" y="277" text-anchor="middle" fill="#6b6a65" font-size="11">interpreter output hidden, returncode kept</text>
+
+  <!-- feedback loop back to agent (over the top, one return per lane) -->
+  <path d="M 255 170 L 255 14 L 395 14 L 395 18" fill="none" stroke="#2a78d6" stroke-width="2" stroke-dasharray="7,5" marker-end="url(#arrb)"/>
+  <path d="M 940 200 L 948 200 L 948 14 L 435 14 L 435 18" fill="none" stroke="#2a78d6" stroke-width="2" stroke-dasharray="7,5" marker-end="url(#arrb)"/>
+  <text x="252" y="10" fill="#2a78d6" font-size="11.5" font-weight="700">observation &#8594; next turn</text>
+
+  <!-- row 3: submit -->
+  <line x1="330" y1="256" x2="330" y2="330" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="760" y1="290" x2="760" y2="330" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="346" y="300" fill="#6b6a65" font-size="11">loop done</text>
+  <text x="776" y="316" fill="#6b6a65" font-size="11">loop done</text>
+  <rect x="150" y="334" width="790" height="58" rx="9" fill="#fdf3dd" stroke="#eda100" stroke-width="2"/>
+  <text x="545" y="357" text-anchor="middle" font-weight="700" fill="#a5670a">&#9315; explicit submit &#8212; passes through the swap untouched</text>
+  <text x="545" y="376" text-anchor="middle" fill="#3a3a37" font-size="11.5">echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT &amp;&amp; cat patch.txt</text>
+
+  <!-- row 4: grading -->
+  <line x1="545" y1="392" x2="545" y2="418" stroke="#6b6a65" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="290" y="422" width="510" height="42" rx="9" fill="#f6f5f0" stroke="#0b0b0b" stroke-width="1.5"/>
+  <text x="545" y="448" text-anchor="middle" font-weight="600" fill="#0b0b0b">preds.json &#8594; official SWE-bench grading (sb-cli)</text>
+</svg>
+</div>
+
+<h2><span class="n">2</span>We scaled to SWE-bench</h2>
+<img src="assets/swe_rubrics_composition.png" alt="What the SWE rubric libraries actually predict">
+
+<h2><span class="n">3</span>SWE-bench scaling</h2>
+<img src="assets/rubric-scaling-swe.png" alt="SWE-bench Verified resolve rate vs rubric library size">
+
+<h2><span class="n">4</span>MLE-bench scaling<span class="tag">placeholder</span></h2>
+<img src="assets/rubric-scaling-mle.png" alt="MLE-bench Lite medal rate vs rubric library size (placeholder)">
+
+<footer>Scaling plots: <code>make_0831_plots.py</code> in this repo (hardcoded values).
+The live SWE plot code is <code>plot_scaling.py</code> at the cwm-agent repo root
+(commit <code>837d519</code>); it reads the four official grading reports and regenerates with
+<code>uv run --with matplotlib python plot_scaling.py</code>.</footer>
+</div></body></html>
