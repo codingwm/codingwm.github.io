@@ -1,4 +1,4 @@
-"""Scaling plots for the 8/31 updates page — HARDCODED values (placeholders).
+"""Scaling plots for the 8/31 updates page — values hardcoded below.
 
     uv run --with matplotlib python make_0831_plots.py
         ->  assets/rubric-scaling-swe.png
@@ -31,14 +31,14 @@ SWE = {
     "out": "assets/rubric-scaling-swe.png",
 }
 
-# MLE-bench Lite: every number below is a placeholder (x/22 competitions).
+# MLE-bench Lite: hand-edit the rates/baseline below, then rerun this script.
 MLE = {
     "sizes": [10, 100, 1000],
-    "rates": [100 * 2 / 22, 100 * 3 / 22, 100 * 4 / 22],
-    "baseline": 100 * 5 / 22,
+    "rates": [9.1, 13.6, 18.2],
+    "baseline": 22.7,
     "ylabel": "MLE-bench Lite medal rate (%)",
     "title": "MLE-bench Lite — medal rate vs rubric library size",
-    "subtitle": "PLACEHOLDER values — Haiku 4.5 agent, 22 Lite competitions per point, Opus 5 grader",
+    "subtitle": "Haiku 4.5 agent, 22 Lite competitions per point, Opus 5 grader",
     "xlim": (7, 1500),
     "out": "assets/rubric-scaling-mle.png",
 }

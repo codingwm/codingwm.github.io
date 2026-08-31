@@ -17,10 +17,6 @@ a{color:var(--accent)}a:hover{text-decoration:underline}
 b,strong{color:var(--ink)}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
  background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
-.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
- padding:2px 8px;border-radius:20px;vertical-align:2px;margin-left:8px;
- background:#fdf1cf;color:#7a5c05}
-@media (prefers-color-scheme:dark){.tag{background:#3d3312;color:#e6cb6b}}
 img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
 .fig{background:#fff;border:1px solid var(--grid);border-radius:8px;padding:14px;margin:14px 0}
 .fig svg{display:block;width:100%;height:auto}
@@ -31,7 +27,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a></p>
 
 <h1>8/31 updates</h1>
-<p class="sub">New agent architecture &middot; scaled to SWE-bench &middot; MLE-bench placeholder</p>
+<p class="sub">New agent architecture &middot; SWE-bench scaling &middot; MLE-bench scaling</p>
 
 <h2><span class="n">1</span>We changed to this agent architecture</h2>
 <p>The harness is now <a href="https://github.com/EdwardoSunny/cwm-agent">cwm-agent</a>, a
@@ -120,8 +116,8 @@ instead of the interpreter output. Agent, model and submission code are identica
 <h2><span class="n">3</span>SWE-bench scaling</h2>
 <img src="assets/rubric-scaling-swe.png" alt="SWE-bench Verified resolve rate vs rubric library size">
 
-<h2><span class="n">4</span>MLE-bench scaling<span class="tag">placeholder</span></h2>
-<img src="assets/rubric-scaling-mle.png" alt="MLE-bench Lite medal rate vs rubric library size (placeholder)">
+<h2><span class="n">4</span>MLE-bench scaling</h2>
+<img src="assets/rubric-scaling-mle.png" alt="MLE-bench Lite medal rate vs rubric library size">
 
 <footer>Scaling plots: <code>make_0831_plots.py</code> in this repo (hardcoded values).
 The live SWE plot code is <code>plot_scaling.py</code> at the cwm-agent repo root
