@@ -55,8 +55,8 @@ def draw(spec: dict):
     ax.axhline(baseline, color=AXIS, lw=1.5, ls=(0, (5, 4)), zorder=1)
     ax.annotate(
         f"Interpreter feedback (real execution)  {baseline:.1f}%",
-        xy=(sizes[0], baseline), xytext=(0, -12), textcoords="offset points",
-        color=INK2, fontsize=9.5, va="top",
+        xy=(sizes[0], baseline), xytext=(0, 8), textcoords="offset points",
+        color=INK2, fontsize=9.5, va="bottom",
     )
 
     # the CWM series
