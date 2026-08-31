@@ -18,8 +18,8 @@ from matplotlib.ticker import FixedLocator
 SURFACE, INK, INK2, MUTED = "#fcfcfb", "#0b0b0b", "#52514e", "#898781"
 GRID, AXIS, SERIES = "#e1e0d9", "#c3c2b7", "#2a78d6"
 
-# SWE-bench Verified: cwm10/cwm100 are the official grading reports (58/500, 56/500);
-# the 1000-rubric point is a hardcoded placeholder at 185/500 = 37.0%.
+# SWE-bench Verified: hand-edit the rates/baseline below, then rerun this script.
+# (cwm10/cwm100/baseline match the official grading reports in cwm-agent.)
 SWE = {
     "sizes": [15, 227, 1006],
     "rates": [100 * 58 / 500, 100 * 56 / 500, 100 * 185 / 500],
