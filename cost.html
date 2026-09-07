@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Curation cost per rubric — CodeWorld GYM</title>
+<style>
+:root{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--accent:#2a78d6}
+@media (prefers-color-scheme:dark){:root{--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--grid:#33322f;--accent:#3987e5}}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--ink);margin:0;padding:40px 24px 80px;
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 34px}
+h2{font-size:19px;margin:44px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--grid)}
+h2 .n{color:var(--ink2);font-weight:400;margin-right:9px}
+p{color:var(--ink2);margin:8px 0}
+a{color:var(--accent)}a:hover{text-decoration:underline}
+b,strong{color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+ background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
+img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
+.fig{background:#fff;border:1px solid var(--grid);border-radius:8px;padding:14px;margin:14px 0}
+.fig svg{display:block;width:100%;height:auto}
+footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
+ color:var(--ink2);font-size:12.5px}
+</style></head><body><div class="wrap">
+<style>table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:#fff;border:1px solid var(--grid);border-radius:8px;overflow:hidden}th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}th{background:rgba(128,128,128,.08);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}tr.hl td{background:rgba(42,120,214,.07);font-weight:600}tr.dim td{color:var(--ink2)}.twrap{overflow-x:auto}pre.diag{background:rgba(128,128,128,.08);border:1px solid var(--grid);border-radius:8px;padding:12px 14px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto;color:var(--ink)}.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(128,128,128,.13);color:var(--ink2);margin-left:6px}@media (prefers-color-scheme:dark){table{background:#222220}}</style>
+</head><body><div class="wrap">
+<p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="0907_updates.html">9/07 updates</a></p>
+<h1>What one rubric costs</h1>
+<p class="sub">On-policy real-bug mining (SWE-Gym → rubric library), per rollout, from the logs of the 241-rollout <code>realgym</code> run &middot; prices from litellm: Opus 5 $5 / $25 per M tokens in / out, Haiku 4.5 $1 / $5, GKE Spot ≈ $0.045 per node-hour</p>
+<div class="twrap"><table>
+<tr><th>Component</th><th>Basis</th><th class="num">Current</th><th class="num">Cheap</th></tr>
+<tr><td>Haiku agent</td><td>96 LM calls avg × $0.0042; cheap = capped at 150 steps (−20%)</td><td class="num">$0.40</td><td class="num">$0.32</td></tr>
+<tr><td>Opus judge grading the rollout</td><td>~15 grades × $0.116; same step cap</td><td class="num">$1.74</td><td class="num">$1.39</td></tr>
+<tr><td>Real test run + pod</td><td>Spot e2-standard-4, ~0.5 h</td><td class="num">$0.02</td><td class="num">$0.02</td></tr>
+<tr><td>Opus distillation</td><td>one call per failure; 90% of rollouts fail</td><td class="num">$0.09</td><td class="num">$0.09</td></tr>
+<tr><td>Embedding + dedup</td><td>text-embedding-3-small</td><td class="num">&lt;$0.01</td><td class="num">&lt;$0.01</td></tr>
+<tr class="hl"><td>Per rollout</td><td></td><td class="num">$2.25</td><td class="num">$1.82</td></tr>
+<tr><td>Per rubric</td><td>0.79 rubrics per rollout (241 → 217 failures → 191 after dedup)</td><td class="num">$2.85</td><td class="num">$2.30</td></tr>
+<tr><td>Precision filter, per candidate</td><td>judge vs 454 labelled patches; cheap = Haiku pre-pass, Opus only where it applies, 64 rubrics per call, skip pairs retrieval would never surface</td><td class="num">$1.26</td><td class="num">$0.31</td></tr>
+<tr class="hl"><td>Per kept rubric</td><td>78 of 191 survive the filter</td><td class="num">$10.0</td><td class="num">$6.4</td></tr>
+<tr class="dim"><td>…if also mined under rc-only feedback</td><td>drops the judge from the mining rollout; changes which failures are mined — untested</td><td class="num">—</td><td class="num">$2.1</td></tr>
+</table></div>
+<p><b>Where the money is:</b> the Opus judge grading the mining agent's probes is 77% of a rollout. The step cap and the cheaper filter keep the recipe identical; re-using the cached rollouts makes any re-distillation or re-filter ≈ $25 instead of a new $540 run.</p>
+<p><b>For scale:</b> the original manifest-mined library came to ≈ $2 per rubric with 85–90% of curation calls yielding duplicates; a task-specific criterion generated at eval time costs $0.03 and is never reused.</p>
+<footer>CodeWorld GYM &middot; 2026-09-07</footer>
+</div></body></html>
