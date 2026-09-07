@@ -23,70 +23,81 @@ img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;ma
 footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
  color:var(--ink2);font-size:12.5px}
 </style></head><body><div class="wrap">
-<style>table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:#fff;border:1px solid var(--grid);border-radius:8px;overflow:hidden}th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}th{background:rgba(128,128,128,.08);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}tr.hl td{background:rgba(42,120,214,.07);font-weight:600}tr.dim td{color:var(--ink2)}.twrap{overflow-x:auto}pre.diag{background:rgba(128,128,128,.08);border:1px solid var(--grid);border-radius:8px;padding:12px 14px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto;color:var(--ink)}.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(128,128,128,.13);color:var(--ink2);margin-left:6px}@media (prefers-color-scheme:dark){table{background:#222220}}</style>
+<style>
+.chart{background:#fff;border:1px solid var(--grid);border-radius:8px;padding:14px 10px 6px;margin:14px 0}
+.chart svg{display:block;width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:14px 22px;color:var(--ink2);font-size:13px;margin:6px 4px 0}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+ul{color:var(--ink2);padding-left:20px}li{margin:6px 0}
+@media (prefers-color-scheme:dark){.chart{background:#222220}}
+</style>
 </head><body><div class="wrap">
 <p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="cost.html">curation cost per rubric</a></p>
 <h1>9/07 updates</h1>
-<p class="sub">Full SWE-bench Verified (500) &middot; Haiku 4.5 agent &middot; official test grading &middot; every arm paired on the same instances</p>
+<p class="sub">SWE-bench Verified, all 500 instances &middot; Haiku 4.5 agent &middot; official test grading &middot; held-out (no mining pool touches Verified)</p>
 
-<h2><span class="n">1</span>The method as it runs</h2>
-<pre class="diag">agent (Haiku 4.5) ──► bash command ──► is_execution_command()?
-                                          │
-              no: reads / edits / grep / git ───────► real interpreter ──► real output + rc
-                                          │
-              yes: pytest, python x.py, python -c, make, bash -c, ./script, $(python …)
-                                          │
-                                          ▼  (command still RUNS for its side effects; output is replaced)
-                              ┌─────────────────────────────────────────────┐
-                              │ world model                                 │
-                              │  diff of the working tree (probe files incl.)│
-                              │  + task + the command just run              │
-                              │  ─ rubric judge: criteria → verdicts        │
-                              │      criteria = library (retrieved) or      │
-                              │                 generated from the issue    │
-                              │  ─ or simulator: predicts the output        │
-                              └─────────────────────────────────────────────┘
-                                          │
-                              agent sees: judge text (or reward only) + REAL return code
-                              side channel closed: files written by a run are quarantined</pre>
-<p>Every file a run writes is moved out of reach afterwards, and any command naming one (or wrapping a run in <code>bash -c</code>, <code>./script</code>, <code>$( )</code>) is treated as an execution — validated on four 12-instance smokes; the last one showed zero execution output reaching the agent across 386 interpreter reads.</p>
+<h2><span class="n">1</span>The method</h2>
+<p>The agent is a Haiku 4.5 loop issuing bash commands. Each command is routed by a classifier:</p>
+<ul>
+<li><b>Reads, edits, navigation</b> (<code>cat</code>, <code>grep</code>, <code>sed</code>, <code>git diff</code>, heredoc writes) go to the <b>real interpreter</b>.</li>
+<li><b>Code execution</b> (<code>pytest</code>, <code>python x.py</code>, <code>python -c</code>, <code>bash -c</code>, <code>./script</code>, <code>$(python …)</code>) still runs for its side effects, but its output is <b>replaced by the coding world model (CWM)</b>: the model reads the task, the current diff (probe files included) and the command, grades the diff against a set of criteria — retrieved from a rubric library or the standing task criterion — and the agent sees that verdict plus the real return code.</li>
+<li>Files written by a run are quarantined so the agent cannot read the output back; every trace is audited for leakage.</li>
+</ul>
+<p>The hidden grading tests are never available to the agent in any arm; the interpreter baseline only runs what the agent chooses to run.</p>
 
-<h2><span class="n">2</span>Results (confound-free)</h2>
-<p>Interpreter baseline <b>362/500 = 72.4%</b>. Paired = exact McNemar win/lose vs the baseline on shared instances. The earlier "no execution" controls leaked (the agent read its redirected test output through <code>cat</code> in 81% of instances) and are withdrawn; the clean <code>noexec</code> below was run under the closed environment (last row of the first block).</p>
-<div class="twrap"><table>
-<tr><th>arm</th><th>judge</th><th>what the agent sees</th><th class="num">resolved</th><th class="num">rate</th><th class="num">vs baseline</th><th class="num">p</th></tr>
-<tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Opus judge, rich feedback</b> (per-criterion verdicts + explanations)</td></tr>
-<tr><td>task criterion only (<code>nolib</code>)</td><td>Opus</td><td>rich</td><td class="num">383</td><td class="num">76.6%</td><td class="num">52/31</td><td class="num">0.03</td></tr>
-<tr><td>mined library 10 / 100 / 1000, top-12</td><td>Opus</td><td>rich</td><td class="num">394 / 383 / 379</td><td class="num">78.8 / 76.6 / 75.8%</td><td class="num"></td><td class="num">0.0004 / 0.03 / 0.07</td></tr>
-<tr><td>12 <b>random</b> rubrics (control)</td><td>Opus</td><td>rich</td><td class="num">391</td><td class="num">78.2%</td><td class="num">56/27</td><td class="num">0.002</td></tr>
-<tr><td>real-bug library 191, top-12 / top-1</td><td>Opus</td><td>rich</td><td class="num">390 / 395</td><td class="num">78.0 / 79.0%</td><td class="num"></td><td class="num">0.002 / 0.0002</td></tr>
-<tr><td>precision-filtered 78, top-12</td><td>Opus</td><td>rich</td><td class="num">400</td><td class="num">80.0%</td><td class="num">60/22</td><td class="num">&lt;0.0001</td></tr>
-<tr><td>citation contract, mined 1000 / filtered 78</td><td>Opus</td><td>rich + cited lines</td><td class="num">406 / 407</td><td class="num">81.2 / 81.4%</td><td class="num"></td><td class="num">&lt;0.0001</td></tr>
-<tr><td>6 criteria generated from the issue (<code>gen6</code>)</td><td>Opus</td><td>rich</td><td class="num">408</td><td class="num">81.6%</td><td class="num">65/19</td><td class="num">&lt;0.0001</td></tr>
-<tr><td>generated 6 + citation</td><td>Opus</td><td>rich + cited lines</td><td class="num">416</td><td class="num">83.2%</td><td class="num">77/23</td><td class="num">&lt;0.0001</td></tr>
-<tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Opus judge as a reward model</b> (agent sees only <code>reward, n of m violated</code>)</td></tr>
-<tr class="hl"><td>generated 6, reward only (<code>gen6-scalar</code>)</td><td>Opus</td><td>reward only</td><td class="num">314</td><td class="num">62.8%</td><td class="num">19/67</td><td class="num">&lt;0.0001</td></tr>
-<tr><td>task criterion, reward only (<code>nolib-scalar</code>)</td><td>Opus</td><td>reward only</td><td class="num">309</td><td class="num">61.8%</td><td class="num">22/75</td><td class="num">&lt;0.0001</td></tr>
-<tr class="dim"><td>generated 6, violated titles only</td><td>Opus</td><td>titles</td><td class="num" colspan="4">running</td></tr>
-<tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Same-strength judge / simulator</b> (Haiku)</td></tr>
-<tr><td>mined 1000 / task criterion / filtered 78 / generated 6 / generated 6 criticise-only</td><td>Haiku</td><td>rich</td><td class="num">315 / 303 / 314 / 309 / 311</td><td class="num">60.6–63.0%</td><td class="num"></td><td class="num">&lt;0.0001</td></tr>
-<tr><td>citation contract, mined 1000</td><td>Haiku</td><td>rich + cited lines</td><td class="num">277</td><td class="num">55.4%</td><td class="num">16/101</td><td class="num">&lt;0.0001</td></tr>
-<tr><td>simulator: predicts output + exit code</td><td>Haiku</td><td>simulated terminal</td><td class="num">282</td><td class="num">56.4%</td><td class="num">19/99</td><td class="num">&lt;0.0001</td></tr>
-<tr><td>simulator given the real exit code (<code>sim-cond</code>)</td><td>Haiku</td><td>simulated terminal</td><td class="num">308</td><td class="num">61.6%</td><td class="num">16/70</td><td class="num">&lt;0.0001</td></tr>
-<tr class="hl"><td>no code execution at all (<code>noexec</code>, closed env) — <b>the floor</b></td><td>—</td><td>nothing</td><td class="num">314/494</td><td class="num">63.6%</td><td class="num">22/65</td><td class="num">&lt;0.0001</td></tr>
-</table></div>
-<p>Arms run before the side-channel fix carry ≤2% contaminated instances (audited per arm); the interpreter baseline is unaffected.</p>
+<h2><span class="n">2</span>Results</h2>
+<p>Resolved rate on SWE-bench Verified. Left: the two baselines. Middle: the original setup where <i>every</i> command went through the CWM (the agent could not read code), across library sizes. Right: the hybrid setup with the 1000-rubric retrieval CWM at two judge strengths.</p>
+<div class="chart">
+<svg viewBox="0 0 920 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bar chart of SWE-bench Verified resolve rates">
+  <g stroke="#e4e3df" stroke-width="1">
+    <line x1="60" x2="900" y1="340" y2="340"/><line x1="60" x2="900" y1="280" y2="280"/><line x1="60" x2="900" y1="220" y2="220"/><line x1="60" x2="900" y1="160" y2="160"/><line x1="60" x2="900" y1="100" y2="100"/><line x1="60" x2="900" y1="40" y2="40"/>
+  </g>
+  <g fill="#6b6a65" font-size="12" text-anchor="end">
+    <text x="52" y="344">0%</text><text x="52" y="284">20%</text><text x="52" y="224">40%</text><text x="52" y="164">60%</text><text x="52" y="104">80%</text><text x="52" y="44">100%</text>
+  </g>
+  <line x1="60" x2="900" y1="122.8" y2="122.8" stroke="#0b0b0b" stroke-dasharray="4 4" stroke-width="1"/>
+  <text x="898" y="118" fill="#6b6a65" font-size="11.5" text-anchor="end">interpreter 72.4%</text>
+  <line x1="60" x2="900" y1="149.2" y2="149.2" stroke="#9b9a94" stroke-dasharray="4 4" stroke-width="1"/>
+  <text x="898" y="163" fill="#6b6a65" font-size="11.5" text-anchor="end">no-execution floor 63.6%</text>
 
-<h2><span class="n">3</span>Findings</h2>
-<p><b>Retrieval from a lesson library carries no information.</b> 12 random rubrics (78.2%) = 12 retrieved (79.4%, p=0.46) = the real-bug library (78.0%, p=1.0), all ≈ no library. Size, source (synthetic vs real bugs), on/off-policy — none of it matters.</p>
-<p><b>Precision does, a little.</b> Keeping only rubrics that fire on wrong mining patches and stay quiet on correct ones (78 of 191) gives the one library that beats no-library on the full 500 (400 vs 383, p=0.02); on Verified patches the kept rubrics fire 26% on wrong vs 15% on correct (unfiltered: 62% vs 74%).</p>
-<p><b>Task-specific criteria generated from the issue beat every library</b> (81.6%, p=0.0015 vs no library) — with an Opus judge and rich feedback.</p>
-<p><b>The Opus gain is coaching, not evaluation.</b> The identical judge and criteria with the agent shown only the reward scores 62.8% — indistinguishable from a Haiku judge (p=0.64) and 94 instances below the rich version. With a bare reward, 40% of agents submit while the judge still says "not fixed" (4% with explanations). A strong judge as a reward model is worth nothing; the +9pp over the interpreter is a stronger model explaining what is wrong with the patch.</p>
-<p><b>Nothing works at the agent's own strength.</b> Against the clean no-execution floor (63.6%), every Haiku-judge configuration, the reward-only Opus judge and the rc-conditioned Haiku simulator are statistically indistinguishable from <i>no feedback at all</i> (p = 0.11–0.81); the pure Haiku simulator is below it (p = 0.0002). Reading the code is worth ~50pp over the all-CWM setup; real execution adds +8.8pp on top; the only channels that recover any of that are an Opus judge with explanations.</p>
+  <rect x="82"  y="122.8" width="76" height="217.2" fill="#0b0b0b"/>
+  <rect x="196" y="149.2" width="76" height="190.8" fill="#9b9a94"/>
+  <rect x="330" y="301"   width="76" height="39"    fill="#c9764b"/>
+  <rect x="444" y="301.6" width="76" height="38.4"  fill="#c9764b"/>
+  <rect x="558" y="304"   width="76" height="36"    fill="#c9764b"/>
+  <rect x="692" y="151"   width="76" height="189"   fill="#e0a54b"/>
+  <rect x="806" y="112.6" width="76" height="227.4" fill="#2a78d6"/>
 
-<h2><span class="n">4</span>Issues, open</h2>
-<p><b>The side channel</b> (found 13:00): an agent told "output withheld" redirects the run to a file and reads it. The two no-execution controls were invalid because of it; the environment is now closed (quarantine + classifier), the clean control is running, and every earlier arm has been audited.</p>
-<p><b>No same-strength method yet.</b> Judge, criticise-only judge, simulator, and reward-only strong judge all fail for the same reason: the agent can't act on a verdict it can't verify, and same-strength verdicts are wrong too often. Still running: the simulator handed the real exit code (<code>sim-cond</code>), and the titles-only bandwidth point.</p>
-<p><b>What would count as success</b> is now sharply defined: beat the clean <code>noexec</code> floor with a channel that is neither real execution nor a stronger model's prose.</p>
-<footer>CodeWorld GYM &middot; 2026-09-07 &middot; details: <code>RUBRIC_DIAGNOSIS.md</code> §10–§15 in <a href="https://github.com/7peng/agent-cwm">7peng/agent-cwm</a></footer>
+  <g fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="middle">
+    <text x="120" y="115">72.4%</text><text x="234" y="141">63.6%</text><text x="368" y="293">13.0%</text><text x="482" y="293">12.8%</text><text x="596" y="296">12.0%</text><text x="730" y="143">63.0%</text><text x="844" y="105">75.8%</text>
+  </g>
+  <g fill="#6b6a65" font-size="11" text-anchor="middle">
+    <text x="120" y="356">362/500</text><text x="234" y="356">314/494</text><text x="368" y="356">65/500</text><text x="482" y="356">64/500</text><text x="596" y="356">60/499</text><text x="730" y="356">315/500</text><text x="844" y="356">379/500</text>
+  </g>
+  <g fill="#0b0b0b" font-size="12" text-anchor="middle">
+    <text x="120" y="376">interpreter</text><text x="120" y="391">(real execution)</text>
+    <text x="234" y="376">no code execution</text><text x="234" y="391">(bash only, floor)</text>
+    <text x="368" y="376">all-CWM</text><text x="368" y="391">mined 10</text>
+    <text x="482" y="376">all-CWM</text><text x="482" y="391">mined 100</text>
+    <text x="596" y="376">all-CWM</text><text x="596" y="391">mined 1000</text>
+    <text x="730" y="376">hybrid, Haiku CWM</text><text x="730" y="391">1000-rubric retrieval</text>
+    <text x="844" y="376">hybrid, Opus CWM</text><text x="844" y="391">1000-rubric retrieval</text>
+  </g>
+  <g fill="#6b6a65" font-size="11.5" font-weight="600" text-anchor="middle" letter-spacing=".04em">
+    <text x="177" y="22">BASELINES</text><text x="482" y="22">EVERY COMMAND THROUGH THE CWM (NON-HYBRID)</text><text x="787" y="22">HYBRID: EXECUTION → CWM</text>
+  </g>
+  <g stroke="#e4e3df" stroke-width="1"><line x1="82" x2="272" y1="28" y2="28"/><line x1="330" x2="634" y1="28" y2="28"/><line x1="692" x2="882" y1="28" y2="28"/></g>
+</svg>
+<div class="legend"><span style="--c:#0b0b0b">interpreter</span><span style="--c:#9b9a94">no code execution</span><span style="--c:#c9764b">all-CWM, non-hybrid (Opus judge)</span><span style="--c:#e0a54b">hybrid, Haiku judge</span><span style="--c:#2a78d6">hybrid, Opus judge</span></div>
+</div>
+<p>Paired on shared instances (exact McNemar): hybrid Opus vs floor 74 win / 14 lose (p &lt; 0.0001); hybrid Haiku vs floor 33 / 36 (p = 0.81); interpreter vs floor 65 / 22 (p &lt; 0.0001).</p>
+
+<h2><span class="n">3</span>What it says</h2>
+<ul>
+<li><b>Reading the code is worth ~50 points; running it is worth ~9 more.</b> All-CWM (no readable output) ≈ 12%; bash-only 63.6%; interpreter 72.4%.</li>
+<li><b>At the agent's own strength, the rubric CWM is worth nothing:</b> Haiku judge + 1000-rubric retrieval = 63.0%, indistinguishable from no execution feedback (p = 0.81).</li>
+<li><b>With an Opus judge it is worth +12 points over the floor and +3 over the interpreter</b> — but the same judge shown to the agent as a bare reward drops back to the floor (62.8%), so the gain is the judge's explanations, i.e. coaching by a stronger model, not evaluation.</li>
+<li><b>Library size, source, retrieval vs random:</b> no measurable effect under either judge (details: <a href="https://github.com/7peng/agent-cwm/blob/main/RUBRIC_DIAGNOSIS.md">RUBRIC_DIAGNOSIS.md</a> §10–§16).</li>
+</ul>
+<footer>CodeWorld GYM &middot; 2026-09-07 &middot; the floor is 314/494 (six agents were still running when graded); earlier "no execution" controls leaked through file reads and are withdrawn.</footer>
 </div></body></html>
