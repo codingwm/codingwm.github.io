@@ -52,7 +52,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <p>Every file a run writes is moved out of reach afterwards, and any command naming one (or wrapping a run in <code>bash -c</code>, <code>./script</code>, <code>$( )</code>) is treated as an execution — validated on four 12-instance smokes; the last one showed zero execution output reaching the agent across 386 interpreter reads.</p>
 
 <h2><span class="n">2</span>Results (confound-free)</h2>
-<p>Interpreter baseline <b>362/500 = 72.4%</b>. Paired = exact McNemar win/lose vs the baseline on shared instances. The two earlier "no execution" controls are omitted: they leaked (the agent read its redirected test output through <code>cat</code> in 81% of instances); a clean <code>noexec</code> is being re-run.</p>
+<p>Interpreter baseline <b>362/500 = 72.4%</b>. Paired = exact McNemar win/lose vs the baseline on shared instances. The earlier "no execution" controls leaked (the agent read its redirected test output through <code>cat</code> in 81% of instances) and are withdrawn; the clean <code>noexec</code> below was run under the closed environment (last row of the first block).</p>
 <div class="twrap"><table>
 <tr><th>arm</th><th>judge</th><th>what the agent sees</th><th class="num">resolved</th><th class="num">rate</th><th class="num">vs baseline</th><th class="num">p</th></tr>
 <tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Opus judge, rich feedback</b> (per-criterion verdicts + explanations)</td></tr>
@@ -66,14 +66,14 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <tr><td>generated 6 + citation</td><td>Opus</td><td>rich + cited lines</td><td class="num">416</td><td class="num">83.2%</td><td class="num">77/23</td><td class="num">&lt;0.0001</td></tr>
 <tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Opus judge as a reward model</b> (agent sees only <code>reward, n of m violated</code>)</td></tr>
 <tr class="hl"><td>generated 6, reward only (<code>gen6-scalar</code>)</td><td>Opus</td><td>reward only</td><td class="num">314</td><td class="num">62.8%</td><td class="num">19/67</td><td class="num">&lt;0.0001</td></tr>
-<tr class="dim"><td>task criterion, reward only</td><td>Opus</td><td>reward only</td><td class="num" colspan="4">running</td></tr>
+<tr><td>task criterion, reward only (<code>nolib-scalar</code>)</td><td>Opus</td><td>reward only</td><td class="num">309</td><td class="num">61.8%</td><td class="num">22/75</td><td class="num">&lt;0.0001</td></tr>
 <tr class="dim"><td>generated 6, violated titles only</td><td>Opus</td><td>titles</td><td class="num" colspan="4">running</td></tr>
 <tr><td colspan="7" style="background:rgba(128,128,128,.06)"><b>Same-strength judge / simulator</b> (Haiku)</td></tr>
 <tr><td>mined 1000 / task criterion / filtered 78 / generated 6 / generated 6 criticise-only</td><td>Haiku</td><td>rich</td><td class="num">315 / 303 / 314 / 309 / 311</td><td class="num">60.6–63.0%</td><td class="num"></td><td class="num">&lt;0.0001</td></tr>
 <tr><td>citation contract, mined 1000</td><td>Haiku</td><td>rich + cited lines</td><td class="num">277</td><td class="num">55.4%</td><td class="num">16/101</td><td class="num">&lt;0.0001</td></tr>
 <tr><td>simulator: predicts output + exit code</td><td>Haiku</td><td>simulated terminal</td><td class="num">282</td><td class="num">56.4%</td><td class="num">19/99</td><td class="num">&lt;0.0001</td></tr>
-<tr class="dim"><td>simulator given the real exit code</td><td>Haiku</td><td>simulated terminal</td><td class="num" colspan="4">running</td></tr>
-<tr class="dim"><td>no execution feedback at all (<code>noexec</code>, closed env)</td><td>—</td><td>nothing</td><td class="num" colspan="4">running</td></tr>
+<tr><td>simulator given the real exit code (<code>sim-cond</code>)</td><td>Haiku</td><td>simulated terminal</td><td class="num">308</td><td class="num">61.6%</td><td class="num">16/70</td><td class="num">&lt;0.0001</td></tr>
+<tr class="hl"><td>no code execution at all (<code>noexec</code>, closed env) — <b>the floor</b></td><td>—</td><td>nothing</td><td class="num">314/494</td><td class="num">63.6%</td><td class="num">22/65</td><td class="num">&lt;0.0001</td></tr>
 </table></div>
 <p>Arms run before the side-channel fix carry ≤2% contaminated instances (audited per arm); the interpreter baseline is unaffected.</p>
 
@@ -82,7 +82,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 <p><b>Precision does, a little.</b> Keeping only rubrics that fire on wrong mining patches and stay quiet on correct ones (78 of 191) gives the one library that beats no-library on the full 500 (400 vs 383, p=0.02); on Verified patches the kept rubrics fire 26% on wrong vs 15% on correct (unfiltered: 62% vs 74%).</p>
 <p><b>Task-specific criteria generated from the issue beat every library</b> (81.6%, p=0.0015 vs no library) — with an Opus judge and rich feedback.</p>
 <p><b>The Opus gain is coaching, not evaluation.</b> The identical judge and criteria with the agent shown only the reward scores 62.8% — indistinguishable from a Haiku judge (p=0.64) and 94 instances below the rich version. With a bare reward, 40% of agents submit while the judge still says "not fixed" (4% with explanations). A strong judge as a reward model is worth nothing; the +9pp over the interpreter is a stronger model explaining what is wrong with the patch.</p>
-<p><b>Nothing works at the agent's own strength.</b> Every Haiku-judge configuration sits 47–85 instances below the interpreter (false PASS on 35–42% of wrong patches, 2× the false alarms; withholding the PASSes changes nothing). The Haiku simulator says "pass" on 84% of the runs it gets wrong and the agent iterates on fiction.</p>
+<p><b>Nothing works at the agent's own strength.</b> Against the clean no-execution floor (63.6%), every Haiku-judge configuration, the reward-only Opus judge and the rc-conditioned Haiku simulator are statistically indistinguishable from <i>no feedback at all</i> (p = 0.11–0.81); the pure Haiku simulator is below it (p = 0.0002). Reading the code is worth ~50pp over the all-CWM setup; real execution adds +8.8pp on top; the only channels that recover any of that are an Opus judge with explanations.</p>
 
 <h2><span class="n">4</span>Issues, open</h2>
 <p><b>The side channel</b> (found 13:00): an agent told "output withheld" redirects the run to a file and reads it. The two no-execution controls were invalid because of it; the environment is now closed (quarantine + classifier), the clean control is running, and every earlier arm has been audited.</p>
