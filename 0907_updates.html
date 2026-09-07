@@ -107,6 +107,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 
 <h2><span class="n">4</span>Curation cost per rubric</h2>
 <p class="small">On-policy real-bug mining (SWE-Gym → rubric library), from the 241-rollout <code>realgym</code> run. Prices: Opus 5 $5 / $25 per M tokens, Haiku 4.5 $1 / $5, GKE Spot ≈ $0.045 per node-hour.</p>
+<p class="small"><b>Current</b> = the pipeline as run. <b>Cheap</b> = the same pipeline, same models and labels, with three savings: mining rollouts capped at 150 agent steps instead of 250 (−20% on the agent and on the grades it triggers); the precision filter run with a Haiku pre-pass so Opus only judges (rubric, patch) pairs that plausibly apply, 64 rubrics per call, skipping pairs retrieval would never surface (−75% on the filter); and cached rollouts reused for any re-distillation or re-filter. Nothing about what is mined, how it is distilled, or how it is filtered changes.</p>
 <div class="twrap"><table>
 <tr><th>per mining rollout</th><th class="num">current</th><th class="num">cheap</th></tr>
 <tr><td>Haiku agent (96 LM calls; cheap = 150-step cap)</td><td class="num">$0.40</td><td class="num">$0.32</td></tr>
