@@ -34,6 +34,14 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
 .legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
 ul{color:var(--ink2);padding-left:20px}li{margin:6px 0}
 .small{font-size:13px}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:var(--card);border:1px solid var(--grid);border-radius:8px;overflow:hidden}th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}th{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}tr.hl td{font-weight:600;background:rgba(42,120,214,.08)}.twrap{overflow-x:auto}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}@media (max-width:860px){.pair{grid-template-columns:1fr}}
+.trace{background:var(--card);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;max-height:720px;overflow:auto;font-size:12.5px}
+.trace-h{font-weight:600;margin:0 0 8px;position:sticky;top:-10px;background:var(--card);padding:6px 0;border-bottom:1px solid var(--grid)}
+.step{margin:10px 0;padding-bottom:8px;border-bottom:1px dashed var(--grid)}.thought{color:var(--ink2);margin-bottom:4px}
+.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;color:var(--ink)}.cmd .n{display:inline-block;min-width:26px;color:var(--ink2)}
+.obs{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;color:var(--ink2);margin-top:4px;padding-left:26px}.obs .rc{display:inline-block;font-size:10.5px;padding:0 5px;border-radius:8px;background:rgba(128,128,128,.15);margin-right:6px;color:var(--ink)}
+.muted{color:var(--ink2);font-weight:400}
 </style>
 </head><body><div class="wrap">
 <p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="cost.html">curation cost per rubric</a></p>
@@ -92,5 +100,23 @@ ul{color:var(--ink2);padding-left:20px}li{margin:6px 0}
 <div class="legend"><span style="--c:var(--ink)">interpreter</span><span style="--c:var(--bar-floor)">no code execution</span><span style="--c:var(--bar-cwm)">all-CWM, Opus judge</span><span style="--c:var(--bar-haiku)">hybrid, Haiku judge</span><span style="--c:var(--accent)">hybrid, Opus judge</span></div>
 </div>
 <p class="small">Dashed lines: interpreter (72.4%) and no-code-execution (63.6%). Paired on shared instances, exact McNemar, win / lose vs no code execution: interpreter 65 / 22 (p &lt; 0.0001); hybrid Opus 74 / 14 (p &lt; 0.0001); hybrid Haiku 33 / 36 (p = 0.81). The no-code-execution bar is 314/494: six agents were still running when it was graded.</p>
+
+<h2><span class="n">3</span>Why bash-only beats all-CWM by 50 points</h2>
+<p>In the all-CWM configuration the CWM answered <i>every</i> command — <code>cat</code>, <code>ls</code>, <code>grep</code>, the result of an edit — with a rubric verdict on the current diff. The agent never saw a line of source: it could not find the file that implements the reported behaviour, could not check what an edit did, and typically submitted an empty or misplaced patch. Bash-only restores the code: the agent reads the implementation, reasons about the issue statically, edits, and re-reads its edit. On SWE-bench Verified that alone resolves 63.6%; real execution of its own probes adds the remaining 8.8 points. The trace pair below shows the same instance under both.</p>
+<div id="tracepair"></div>
+
+<h2><span class="n">4</span>Curation cost per rubric</h2>
+<p class="small">On-policy real-bug mining (SWE-Gym → rubric library), from the 241-rollout <code>realgym</code> run. Prices: Opus 5 $5 / $25 per M tokens, Haiku 4.5 $1 / $5, GKE Spot ≈ $0.045 per node-hour.</p>
+<div class="twrap"><table>
+<tr><th>per mining rollout</th><th class="num">current</th><th class="num">cheap</th></tr>
+<tr><td>Haiku agent (96 LM calls; cheap = 150-step cap)</td><td class="num">$0.40</td><td class="num">$0.32</td></tr>
+<tr><td>Opus CWM grading the rollout (~15 grades)</td><td class="num">$1.74</td><td class="num">$1.39</td></tr>
+<tr><td>real test run + pod</td><td class="num">$0.02</td><td class="num">$0.02</td></tr>
+<tr><td>Opus distillation, one call per failure</td><td class="num">$0.09</td><td class="num">$0.09</td></tr>
+<tr class="hl"><td>per rollout</td><td class="num">$2.25</td><td class="num">$1.82</td></tr>
+<tr><td>per rubric (0.79 rubrics / rollout: 241 → 217 failures → 191)</td><td class="num">$2.85</td><td class="num">$2.30</td></tr>
+<tr><td>precision filter, per candidate (cheap = Haiku pre-pass, Opus only where it applies)</td><td class="num">$1.26</td><td class="num">$0.31</td></tr>
+<tr class="hl"><td>per kept rubric (78 of 191 survive)</td><td class="num">$10.0</td><td class="num">$6.4</td></tr>
+</table></div>
 <footer>CodeWorld GYM &middot; 2026-09-07 &middot; full tables and per-arm details in <a href="https://github.com/7peng/agent-cwm/blob/main/RUBRIC_DIAGNOSIS.md">RUBRIC_DIAGNOSIS.md</a></footer>
 </div></body></html>
