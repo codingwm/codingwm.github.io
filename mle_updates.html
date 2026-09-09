@@ -60,6 +60,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="cost.html">curation cost per rubric</a></p>
 <h1>MLE-bench Lite</h1>
 <p class="sub">MLE-bench Lite, all 21 competitions held out &middot; Haiku 4.5 agent &middot; official mlebench grader &middot; 2-hour budget per competition &middot; rubrics collected from external data-science task pools only (270 pool rollouts, 69 failures, 69 lessons: the library is 10 / all = 69, and the "100" arms are replicates of "all")</p>
+<div class="note" style="border:2px solid var(--bar-cwm);border-radius:8px;padding:10px 14px;margin:12px 0;background:var(--card)"><b>Superseded.</b> This page reports the 9/07 <i>run-and-hide</i> design: execution commands were still run in the pod and only their output was hidden, so wall clock here includes real training/test execution, the side-channel scans after every execution, and (for some arms) API throttling. The canonical never-execute results are on <a href="mle_strict_updates.html"><b>MLE-bench Lite — canonical hybrid CWM</b></a>.</div>
 
 <h2><span class="n">1</span>Experiment setting</h2>
 <p>Each task is a Kaggle competition: the agent gets the competition description and data and must leave a valid submission file; the official grader scores it against the real leaderboard. <b>Medal</b> = the submission clears the bronze threshold; the table also reports the above-median rate and valid submissions.</p>

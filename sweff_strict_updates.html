@@ -61,6 +61,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <h1>SWE-fficiency — canonical hybrid CWM</h1>
 <p class="sub">SWE-fficiency, all 498 tasks held out &middot; Haiku 4.5 agent &middot; our GKE grader mirrors the official harness (workload timing + covering tests) &middot; rubrics collected from injected slowdowns on SWE-smith repos only (268 pool rollouts, 69 failures, 69 lessons: the library is 10 / all = 69, and the "100" arms are replicates of "all") &middot; <b>canonical architecture</b>: routed commands are never run (hybrid: code execution; all-CWM: everything); the agent receives only the parsed rubric &rarr; reward verdicts as markdown</p>
 
+
 <h2><span class="n">1</span>Experiment setting</h2>
 <p>Each task is a real repository (pandas, scipy, sympy, astropy, scikit-learn, numpy, matplotlib, dask, xarray) at a commit where a given workload is slow. The agent gets the issue text, the timing workload and the covering tests, and must make the workload faster without changing behaviour. A task counts as <b>resolved</b> when every covering test still passes and the workload is at least as fast as before; the table under the chart also reports the benchmark's own score (harmonic mean of speedup relative to the expert patch).</p>
 <p>A Haiku 4.5 agent works in the repository by issuing bash commands. The settings differ only in what answers those commands:</p>
