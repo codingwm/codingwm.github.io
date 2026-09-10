@@ -139,7 +139,11 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 </table>
 <p class="note">Partial-fix, symptom-patching and wrong-location flags are right about 4 times in 5; the test-process categories flag at the base rate and were dropped in v2 on that principle (the metric does not score tests), not by fitting to these numbers.</p>
 <h2>5. Clean test on the other 400 instances</h2>
-<p class="note">Running: <code>general2-why-400</code> on the 400 instances outside the dev slice, compared with <code>interp-c</code> on the same instances (interpreter: 271 resolved). Controls on the dev slice: Haiku judge with reasons (<code>general2-why-haiku-c</code>) and reasons on the task criterion alone (<code>nolib-why-c</code>).</p>
+<table class="g"><tr><th>arm</th><th class="num">resolved / 400</th><th class="num">rate</th></tr>
+<tr><td><code>interp-c</code> (interpreter)</td><td class="num">271</td><td class="num">67.8%</td></tr>
+<tr class="exp"><td><code>general2-why-400</code> (general-v2, judge reason (experiment))</td><td class="num">306</td><td class="num">76.5%</td></tr>
+<tr class="variant"><td><code>general2-where-400</code> (general-v2, structured location)</td><td class="num">running</td><td class="num">—</td></tr>
+</table>
 <div class="callout"><b>Caveats on the judge-reason result.</b> (1) The reason is natural language written by the judge, so this arm is outside the strict rubric→reward channel the method was defined with; it is reported as an experiment, not as the canonical hybrid CWM. (2) Opus 5 may know these public repositories, and a sentence can carry that knowledge where a scalar cannot. The controls say the gain needs Opus's judgment, not the library: with a Haiku judge the reason channel does nothing (57, its final verdicts are uninformative), while Opus reasons on the task criterion alone reach 79 and the general-v2 library adds about 6 more (85, about one standard error). (3) It takes more steps: about 185 messages per instance versus 138 for the interpreter.</div>
 <h2>6. Example rubrics from general-v2</h2><p class="note">Full text as the judge sees it. Browse every library on the <a href="rubrics.html">rubric browser</a>.</p>
 <div class="rub">### Always update all required ancillary files (partial fix)
