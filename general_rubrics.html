@@ -1,0 +1,181 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>General-lesson rubrics — CodeWorld GYM</title>
+<style>
+:root{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--accent:#2a78d6}
+@media (prefers-color-scheme:dark){:root{--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--grid:#33322f;--accent:#3987e5}}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--ink);margin:0;padding:40px 24px 80px;
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 34px}
+h2{font-size:19px;margin:44px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--grid)}
+h2 .n{color:var(--ink2);font-weight:400;margin-right:9px}
+h3{font-size:15px;margin:30px 0 6px;color:var(--ink)}
+p{color:var(--ink2);margin:8px 0}
+a{color:var(--accent)}a:hover{text-decoration:underline}
+b,strong{color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+ background:rgba(128,128,128,.13);padding:1px 5px;border-radius:3px}
+img{max-width:100%;height:auto;border:1px solid var(--grid);border-radius:6px;margin:14px 0;background:#fff}
+.fig{background:#fff;border:1px solid var(--grid);border-radius:8px;padding:14px;margin:14px 0}
+.fig svg{display:block;width:100%;height:auto}
+footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--grid);
+ color:var(--ink2);font-size:12.5px}
+
+.bar{display:flex;align-items:center;gap:10px;margin:4px 0;font-size:13.5px}.bar .lab{flex:0 0 190px;text-align:right;color:var(--ink2)}
+.bar .track{flex:1;height:18px;background:var(--grid);border-radius:4px;overflow:hidden}.bar .fill{display:block;height:100%}
+.bar .val{flex:0 0 42px;font-variant-numeric:tabular-nums;font-weight:600}
+table.g{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0}table.g th,table.g td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}
+table.g td.num,table.g th.num{text-align:right;font-variant-numeric:tabular-nums}table.g tr.exp td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.chip{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:10px;border:1px solid var(--grid);color:var(--ink2);margin-left:6px}
+.rub{border:1px solid var(--grid);border-radius:8px;padding:10px 14px;margin:10px 0;background:var(--card);font-size:13.5px;white-space:pre-wrap}
+.callout{border-left:4px solid var(--accent);padding:8px 14px;margin:14px 0;background:var(--card)}
+</style></head><body><div class="wrap">
+<style>
+:root{--card:#fff;--bar-floor:#9a9992;--bar-cwm:#d0824f;--bar-haiku:#e0b04a;--bar-rand:#7f6fd1;--bar-sim:#c75c7a}
+@media (prefers-color-scheme:dark){:root{--card:#222220;--bar-floor:#7f7e78;--bar-cwm:#d98a57;--bar-haiku:#e3b652;--bar-rand:#9a8de0;--bar-sim:#d97a95}}
+.chart{background:var(--card);border:1px solid var(--grid);border-radius:8px;padding:16px 10px 8px;margin:14px 0}
+.chart svg{display:block;width:100%;height:auto;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.chart .grid{stroke:var(--grid)}.chart .ref{stroke:var(--ink2)}.chart .muted{fill:var(--ink2)}.chart .ink{fill:var(--ink)}
+.chart .b-int{fill:var(--ink)}.chart .b-floor{fill:var(--bar-floor)}.chart .b-cwm{fill:var(--bar-cwm)}.chart .b-haiku{fill:var(--bar-haiku)}.chart .b-opus{fill:var(--accent)}.chart .b-rand{fill:var(--bar-rand)}.chart .b-sim{fill:var(--bar-sim)}
+.legend{display:flex;flex-wrap:wrap;gap:12px 22px;color:var(--ink2);font-size:13px;margin:10px 6px 0}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+ul{color:var(--ink2);padding-left:20px}li{margin:6px 0}
+.small{font-size:13px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}@media (max-width:860px){.dgrid{grid-template-columns:1fr}}
+.dg{margin:0;background:var(--card);border:1px solid var(--grid);border-radius:8px;padding:10px 10px 4px}.dg figcaption{font-size:12.5px;color:var(--ink2);margin:0 2px 6px}.dg figcaption b{color:var(--ink)}
+.dg svg{display:block;width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.dg .box{fill:var(--card);stroke:var(--ink2);stroke-width:1.2}.dg .box.cwm{stroke:var(--accent);stroke-width:1.8}.dg .box.off{stroke-dasharray:4 3}
+.dg .t{fill:var(--ink)}.dg .m{fill:var(--ink2)}.dg .mk{fill:var(--ink2)}.dg .ar{fill:none;stroke:var(--ink2);stroke-width:1.3;marker-end:url(#ah)}.dg .ar.dash{stroke-dasharray:4 3}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:var(--card);border:1px solid var(--grid);border-radius:8px;overflow:hidden}th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}th{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}tr.hl td{font-weight:600;background:rgba(42,120,214,.08)}.twrap{overflow-x:auto}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}@media (max-width:860px){.pair{grid-template-columns:1fr}}
+.trace{background:var(--card);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;max-height:720px;overflow:auto;font-size:12.5px}
+.trace-h{font-weight:600;margin:0 0 8px;position:sticky;top:-10px;background:var(--card);padding:6px 0;border-bottom:1px solid var(--grid)}
+.step{margin:10px 0;padding-bottom:8px;border-bottom:1px dashed var(--grid)}.thought{color:var(--ink2);margin-bottom:4px}
+.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;color:var(--ink)}.cmd .n{display:inline-block;min-width:26px;color:var(--ink2)}
+.obs{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;color:var(--ink2);margin-top:4px;padding-left:26px}.obs .rc{display:inline-block;font-size:10.5px;padding:0 5px;border-radius:8px;background:rgba(128,128,128,.15);margin-right:6px;color:var(--ink)}
+.muted{color:var(--ink2);font-weight:400}
+.chip{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:9px;margin-right:7px;vertical-align:1px}
+.chip.agent{background:rgba(42,120,214,.16);color:var(--accent)}.chip.interp{background:rgba(27,175,122,.18);color:#118a5f}.chip.cwm{background:rgba(224,140,60,.2);color:#b8621c}.chip.withheld{background:rgba(128,128,128,.18);color:var(--ink2)}
+@media (prefers-color-scheme:dark){.chip.interp{color:#5fd3a4}.chip.cwm{color:#f0a868}}
+.cmd{margin-top:2px}.cmd code{display:block;background:rgba(42,120,214,.14);border-left:4px solid var(--accent);padding:4px 8px;font-size:12px;white-space:pre-wrap;word-break:break-word}
+.obs{margin-top:4px;padding:4px 8px;border-left:3px solid var(--grid);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;white-space:pre-wrap;word-break:break-word;color:var(--ink2)}
+.obs.interp{border-left:4px solid #1baf7a;background:rgba(27,175,122,.13)}.obs.cwm{border-left:4px solid #e08c3c;background:rgba(224,140,60,.16)}.obs.withheld{border-left:4px solid #8a8a84;background:rgba(128,128,128,.14)}
+.thought{color:var(--ink2);font-size:12px;margin-bottom:3px;padding:2px 8px;border-left:4px solid rgba(42,120,214,.45);background:rgba(42,120,214,.05)}
+</style>
+</head><body><div class="wrap">
+<p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="cost.html">curation cost per rubric</a></p>
+
+<h1>General-lesson rubrics: does making the library applicable change anything?</h1>
+<p class="note">2026-09-10 overnight. Dev slice: 100 fixed SWE-bench Verified instances (<code>data/subset100.json</code>, seed 100); the other 400 instances are held for a clean test. Same Haiku 4.5 agent and never-execute hybrid CWM everywhere; arms differ only in the rubric library, the judge, and what the verdict text contains. Standard error at n=100 is about 5 points.</p>
+<h2>1. What changed in the library</h2><ul><li><b>Diagnosis on the old libraries</b>: 91% of retrieved rubrics judged not applicable, reward 1.00 on 64–75% of verdicts, only 78 of 1000 rubrics ever fired: the rubrics were too specific to the failure they were mined from.</li><li><b>New mining prompt</b> (<code>mining/rubric_prompts.py</code>, taxonomy prompt): each pool failure becomes a general lesson with <i>applies when</i>, <i>failure it prevents</i>, a <i>check from task and diff alone</i>, and an exemption. Curators o3 and GPT-5 (o3 gives the highest applicability, about 70%; Opus 18%, Sonnet 5 7–25%, Haiku 4.5 4–6%).</li><li><b>Validation without SWE-bench</b> (<code>mining/mine_validated.py</code>): 60 disjoint pool probes (30 wrong / 30 right patches from the SWE-gym / SWE-smith collection pool); keep rubrics applicable to at least 20% of probes; dedup at 0.90 → <b>general-v1</b>, 191 rubrics. No curator's rubrics separated wrong from right pool patches, so discrimination is not used for selection.</li><li><b>general-v2</b> (181): v1 minus the two test-process categories ("prove your fix with tests", "add a failing test first"), which produced 29% of all violations on the dev run while flagging at the unresolved base rate: SWE-bench scores the fix, not the agent's tests.</li></ul>
+<h2>2. Resolved on the 100-instance dev slice</h2>
+<div class="bar"><span class="lab">general2-why-c</span><span class="track"><span class="fill" style="width:85.0%;background:var(--accent)"></span></span><span class="val">85</span></div>
+<div class="bar"><span class="lab">interp-c</span><span class="track"><span class="fill" style="width:68.0%;background:var(--bar-floor)"></span></span><span class="val">68</span></div>
+<div class="bar"><span class="lab">general-listen-c</span><span class="track"><span class="fill" style="width:63.0%;background:var(--bar-haiku)"></span></span><span class="val">63</span></div>
+<div class="bar"><span class="lab">general2-c</span><span class="track"><span class="fill" style="width:62.0%;background:var(--bar-cwm)"></span></span><span class="val">62</span></div>
+<div class="bar"><span class="lab">nolib-c</span><span class="track"><span class="fill" style="width:61.0%;background:var(--bar-cwm)"></span></span><span class="val">61</span></div>
+<div class="bar"><span class="lab">general-c</span><span class="track"><span class="fill" style="width:61.0%;background:var(--bar-cwm)"></span></span><span class="val">61</span></div>
+<div class="bar"><span class="lab">general2-listen-c</span><span class="track"><span class="fill" style="width:59.0%;background:var(--bar-haiku)"></span></span><span class="val">59</span></div>
+<div class="bar"><span class="lab">general2-evid-c</span><span class="track"><span class="fill" style="width:59.0%;background:var(--bar-haiku)"></span></span><span class="val">59</span></div>
+<div class="bar"><span class="lab">scale100-c</span><span class="track"><span class="fill" style="width:56.0%;background:var(--bar-cwm)"></span></span><span class="val">56</span></div>
+<div class="bar"><span class="lab">scale1000-c</span><span class="track"><span class="fill" style="width:55.0%;background:var(--bar-cwm)"></span></span><span class="val">55</span></div>
+<p class="note">grey: interpreter · orange: hybrid CWM with the canonical titles-only verdict · yellow: channel variants (criterion check step, judge evidence rule) · blue: verdict includes the judge's one-sentence reason per violation (experiment: natural language from the judge, outside the strict rubric→reward channel).</p>
+<table class="g"><tr><th>arm</th><th>library</th><th>judge</th><th>verdict channel</th><th class="num">resolved</th></tr>
+<tr class="exp"><td><code>general2-why-c</code><span class="chip">hybrid CWM, judge-reason experiment</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles + judge&#x27;s one-sentence reason</td><td class="num"><b>85</b></td></tr>
+<tr class="interp"><td><code>interp-c</code><span class="chip">interpreter</span></td><td>—</td><td>—</td><td>—</td><td class="num"><b>68</b></td></tr>
+<tr class="variant"><td><code>general-listen-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v1 (191)</td><td>Opus</td><td>titles + criterion&#x27;s check step</td><td class="num"><b>63</b></td></tr>
+<tr class="canon"><td><code>general2-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles</td><td class="num"><b>62</b></td></tr>
+<tr class="canon"><td><code>nolib-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>task criterion only</td><td>Opus</td><td>titles</td><td class="num"><b>61</b></td></tr>
+<tr class="canon"><td><code>general-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>general-v1 (191)</td><td>Opus</td><td>titles</td><td class="num"><b>61</b></td></tr>
+<tr class="variant"><td><code>general2-listen-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles + criterion&#x27;s check step</td><td class="num"><b>59</b></td></tr>
+<tr class="variant"><td><code>general2-evid-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v2 (181)</td><td>Opus, evidence rule</td><td>titles</td><td class="num"><b>59</b></td></tr>
+<tr class="canon"><td><code>scale100-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>mined 100 (specific)</td><td>Opus</td><td>titles</td><td class="num"><b>56</b></td></tr>
+<tr class="canon"><td><code>scale1000-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>mined 1000 (specific)</td><td>Opus</td><td>titles</td><td class="num"><b>55</b></td></tr>
+</table>
+<h2>3. Is the judge still handing out 1.00s, and does the agent listen?</h2><p class="note">From <code>analysis/verdict_diagnosis.py</code>. Calibration uses the last verdict before submit: how often a clean (1.00) or a red (&lt;1.00) final verdict ended in a resolved instance. Listening: share of violated verdicts followed by an edit before the next verdict, and share of library violations still present at the next verdict.</p><table class="g"><tr><th>arm</th><th class="num">verdicts = 1.00</th><th class="num">final 1.00 → resolved</th><th class="num">final &lt;1.00 → resolved</th><th class="num">edit after violation</th><th class="num">edit after clean</th><th class="num">violations persisting</th><th class="num">echoes criterion</th></tr>
+<tr class="exp"><td><code>general2-why-c</code></td><td class="num">62%</td><td class="num">88% <span class="note">(n=84)</span></td><td class="num">69% <span class="note">(n=16)</span></td><td class="num">40%</td><td class="num">22%</td><td class="num">52%</td><td class="num">23%</td></tr>
+<tr class="variant"><td><code>general-listen-c</code></td><td class="num">27%</td><td class="num">96% <span class="note">(n=23)</span></td><td class="num">53% <span class="note">(n=77)</span></td><td class="num">27%</td><td class="num">20%</td><td class="num">68%</td><td class="num">20%</td></tr>
+<tr class="canon"><td><code>general2-c</code></td><td class="num">49%</td><td class="num">86% <span class="note">(n=58)</span></td><td class="num">27% <span class="note">(n=41)</span></td><td class="num">25%</td><td class="num">18%</td><td class="num">61%</td><td class="num">19%</td></tr>
+<tr class="canon"><td><code>general-c</code></td><td class="num">20%</td><td class="num">80% <span class="note">(n=25)</span></td><td class="num">56% <span class="note">(n=73)</span></td><td class="num">24%</td><td class="num">17%</td><td class="num">72%</td><td class="num">13%</td></tr>
+<tr class="variant"><td><code>general2-listen-c</code></td><td class="num">57%</td><td class="num">81% <span class="note">(n=57)</span></td><td class="num">31% <span class="note">(n=42)</span></td><td class="num">25%</td><td class="num">18%</td><td class="num">57%</td><td class="num">32%</td></tr>
+<tr class="variant"><td><code>general2-evid-c</code></td><td class="num">61%</td><td class="num">84% <span class="note">(n=61)</span></td><td class="num">21% <span class="note">(n=38)</span></td><td class="num">30%</td><td class="num">16%</td><td class="num">63%</td><td class="num">20%</td></tr>
+</table><div class="callout"><b>Reading.</b> The old libraries: 1.00 on 64–75% of verdicts, retrieved rubrics mostly not applicable. With general rubrics the judge has about 9 applicable criteria per verdict and is well calibrated at the end (general-v2: final 1.00 → 81–88% resolved, final red → 21–31%). The remaining gap to the interpreter is on the agent side: with titles alone or titles plus the criterion's check step, 57–72% of violations are still there at the next verdict. Only when the verdict carries the judge's one-sentence reason does the agent act (edit after violation 40%, persistence 52%) and the resolve rate moves.</div>
+<h2>4. Which lessons carry signal (diagnosis only, never used for selection)</h2><p class="note">For the last verdict of each instance: how many times a category was flagged and how often those instances were <i>not</i> resolved, against the arm's unresolved base rate. From <code>analysis/rubric_precision.py</code>.</p>
+<p><b>general-c</b> · unresolved base rate 38%</p><table class="g"><tr><th>category</th><th class="num">flags</th><th class="num">unresolved when flagged</th></tr>
+<tr><td>partial fix</td><td class="num">75</td><td class="num">83%</td></tr>
+<tr><td>task criterion</td><td class="num">58</td><td class="num">79%</td></tr>
+<tr><td>verification theatre</td><td class="num">49</td><td class="num">37%</td></tr>
+<tr><td>reproducer ignored</td><td class="num">35</td><td class="num">34%</td></tr>
+<tr><td>symptom patching</td><td class="num">12</td><td class="num">83%</td></tr>
+<tr><td>wrong location</td><td class="num">11</td><td class="num">73%</td></tr>
+<tr><td>scope creep</td><td class="num">6</td><td class="num">67%</td></tr>
+<tr><td>regression of existing contract</td><td class="num">5</td><td class="num">80%</td></tr>
+<tr><td>missed edge cases</td><td class="num">3</td><td class="num">67%</td></tr>
+</table>
+<p><b>general2-c</b> · unresolved base rate 38%</p><table class="g"><tr><th>category</th><th class="num">flags</th><th class="num">unresolved when flagged</th></tr>
+<tr><td>partial fix</td><td class="num">86</td><td class="num">80%</td></tr>
+<tr><td>task criterion</td><td class="num">68</td><td class="num">91%</td></tr>
+<tr><td>wrong location</td><td class="num">19</td><td class="num">74%</td></tr>
+<tr><td>symptom patching</td><td class="num">14</td><td class="num">93%</td></tr>
+<tr><td>regression of existing contract</td><td class="num">10</td><td class="num">100%</td></tr>
+<tr><td>scope creep</td><td class="num">10</td><td class="num">80%</td></tr>
+<tr><td>missed edge cases</td><td class="num">4</td><td class="num">75%</td></tr>
+</table>
+<p class="note">Partial-fix, symptom-patching and wrong-location flags are right about 4 times in 5; the test-process categories flag at the base rate and were dropped in v2 on that principle (the metric does not score tests), not by fitting to these numbers.</p>
+<h2>5. Clean test on the other 400 instances</h2>
+<p class="note">Running: <code>general2-why-400</code> on the 400 instances outside the dev slice, compared with <code>interp-c</code> on the same instances (interpreter: 271 resolved). Controls on the dev slice: Haiku judge with reasons (<code>general2-why-haiku-c</code>) and reasons on the task criterion alone (<code>nolib-why-c</code>).</p>
+<div class="callout"><b>Caveats on the judge-reason result.</b> (1) The reason is natural language written by the judge, so this arm is outside the strict rubric→reward channel the method was defined with; it is reported as an experiment, not as the canonical hybrid CWM. (2) Opus 5 may know these public repositories, and a sentence can carry that knowledge where a scalar cannot; the Haiku-judge and no-library controls test whether the gain needs Opus or the library. (3) It takes more steps: about 185 messages per instance versus 138 for the interpreter.</div>
+<h2>6. Example rubrics from general-v2</h2><p class="note">Full text as the judge sees it. Browse every library on the <a href="rubrics.html">rubric browser</a>.</p>
+<div class="rub">### Always update all required ancillary files (partial fix)
+- **Applies when**: Any bug-fix where the project’s contribution guide mandates companion changes such as release notes, documentation, test cases, or metadata.  
+- **Failure it prevents**: A fix that corrects the code but is rejected by CI or maintainers because supporting files were left unchanged.  
+- **Check (from the task and the diff alone, no execution)**:  
+  1. Re-read the project’s “how to contribute” section for required non-code updates.  
+  2. Inspect the current diff: verify at least one changelog / whats-new / docs file (or other mandated files) is touched.  
+  3. Confirm the entry references the issue being fixed and follows the project’s formatting conventions.  
+- **Not a violation when**: The project’s guidelines explicitly state that no ancillary update is needed for this class of change.
+<span class="note">applies to 22% of pool probes · mined from pandas-dev/pandas · curator o3</span></div>
+<div class="rub">### Update all code paths and gates that implement the behavior, not just the first obvious condition (partial fix)
+- **Applies when**: A fix changes validation or enforcement logic that is controlled by multiple conditionals, entry points, or configuration flags.
+- **Failure it prevents**: Only adjusting one guard or site so the reproducer passes while other paths remain incorrect or previous guarantees are unintentionally removed.
+- **Check (from the task and the diff alone, no execution)**: 1. From the task, list the behaviors and flags that should influence the check. 2. In the diff, ensure every function/method that gates or performs that behavior is updated consistently (including decorated/overloaded/variant entry points). 3. Verify configuration options are threaded through and respected rather than removed. 4. Confirm no previously necessary guard was dropped without an equivalent check being added where responsibility properly belongs.
+- **Not a violation when**: The behavior is cleanly centralized and the change updates that single source of truth to cover all relevant cases.
+<span class="note">applies to 32% of pool probes · mined from python/mypy · curator gpt5</span></div>
+<div class="rub">### Implement the full behavior change through the entire call path, not just a local tweak (partial fix)
+- **Applies when**: A fix or optimization depends on conditions that originate in one layer but must alter behavior across multiple functions or modules.
+- **Failure it prevents**: Making a small, localized change that does not actually alter the expensive or incorrect path in the reported scenario.
+- **Check (from the task and the diff alone, no execution)**: 1. From the task, note the precise condition under which behavior must change and the expensive action to be avoided. 2. In the diff, verify that any needed parameter/flag is introduced and passed through all involved functions to where the decision is made. 3. Confirm the diff actually bypasses or removes the costly call in that code path. 4. Ensure the observable behavior/return values remain consistent with the existing contract unless explicitly updated across all uses.
+- **Not a violation when**: The root cause is confined to one location and the single change demonstrably removes or corrects the faulty path without needing propagation.
+<span class="note">applies to 27% of pool probes · mined from iterative/dvc · curator gpt5</span></div>
+<div class="rub">### Enumerate and handle every plausible edge-case input that can reach the modified code (missed edge cases)
+- **Applies when**: Fixing logic that branches on input values, types, or sentinels (e.g., nulls, special constants, option flags).  
+- **Failure it prevents**: A patch that solves the reported example but still breaks on unconsidered value or flag combinations.  
+- **Check (from the task and the diff alone, no execution)**:  
+  1. From the issue description, list all variants of the problematic input (different null-likes, dtype flags, boolean options, etc.).  
+  2. Trace each variant through the patched code; verify every branch now yields the intended behavior.  
+  3. Look for early returns or conditionals that mention only some variants; confirm none are left untreated.  
+- **Not a violation when**: The documented public API guarantees that only the specifically addressed variant can occur, making other edge cases impossible in practice.
+<span class="note">applies to 85% of pool probes · mined from pandas-dev/pandas · curator o3</span></div>
+<div class="rub">### Fix the root cause instead of masking it with broad exception handling (symptom patching)
+- **Applies when**: A bug manifests through an exception or incorrect value and the proposed patch merely catches the exception, silences it, or overwrites the value without changing the logic that created the error.
+- **Failure it prevents**: Superficial “band-aid” fixes that leave the faulty path intact, letting other inputs still fail or causing silent regressions elsewhere.
+- **Check (from the task and the diff alone, no execution)**:  
+  1. Look for newly-added try/except blocks, default-return branches, or silent passes that did not exist before.  
+  2. Confirm no accompanying change removes or corrects the code that originally produced the bad state.  
+  3. Ensure no new logical path asserts that the earlier failure “can be ignored” without adjusting upstream conditions.  
+  4. Verify tests (if any) only cover the caught symptom and not the broader behavior.
+- **Not a violation when**: The exception handling is paired with a substantive upstream change that prevents the erroneous condition for all inputs and the catch block only provides a clear, documented fallback that maintains existing contracts.
+<span class="note">applies to 80% of pool probes · mined from pandas-dev/pandas · curator o3</span></div>
+<div class="rub">### Fix the underlying logic rather than silencing or bypassing the error (symptom patching)
+- **Applies when**: A bug shows up as an exception, crash, or bad value, and the proposed patch simply catches the error or returns a default without changing the faulty computation.
+- **Failure it prevents**: Hiding the immediate symptom while leaving the real defect untouched, which resurfaces in other inputs or silently corrupts behavior.
+- **Check (from the task and the diff alone, no execution)**:  
+  1. Spot new try/except blocks or guard clauses added exactly where the original traceback pointed.  
+  2. See if the except body just `pass`, logs, or returns a placeholder without correcting state or inputs.  
+  3. Confirm no deeper adjustment to the algorithm, data structures, or invariants accompanies the catch.  
+- **Not a violation when**: The caught error is narrowly scoped and followed by a well-explained alternate implementation that preserves all functional guarantees.
+<span class="note">applies to 78% of pool probes · mined from iterative/dvc · curator o3</span></div>
+<footer>CodeWorld GYM &middot; 2026-09-10 &middot; code and reports in <a href="https://github.com/7peng/agent-cwm">7peng/agent-cwm</a></footer></body></html>
