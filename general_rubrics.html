@@ -73,7 +73,8 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <h2>0. Results (no SWE-bench in the development loop)</h2>
 <p class="note">The 2026-09-09 canonical sweep, all 500 SWE-bench Verified instances, libraries mined and selected on the collection pool only. Everything below this section used a slice of SWE-bench for development and is kept for transparency, not as results.</p>
 <table class="g"><tr><th>arm</th><th></th><th class="num">resolved / 500</th></tr>
-<tr><td><code>interp-c</code></td><td>interpreter</td><td class="num"><b>339</b></td></tr>
+<tr><td><code>interp-c</code></td><td>interpreter (ceiling)</td><td class="num"><b>339</b></td></tr>
+<tr><td><code>noexec-c</code></td><td>floor: no code execution, output withheld, no CWM</td><td class="num"><b>297</b></td></tr>
 <tr><td><code>haiku-judge-c</code></td><td>hybrid CWM, Haiku judge, mined 1000</td><td class="num"><b>315</b></td></tr>
 <tr><td><code>nolib-c</code></td><td>hybrid CWM, Opus judge, task criterion only</td><td class="num"><b>309</b></td></tr>
 <tr><td><code>scale100-c</code></td><td>hybrid CWM, Opus judge, mined 100</td><td class="num"><b>303</b></td></tr>
@@ -86,26 +87,28 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <h2>1. What changed in the library</h2><ul><li><b>Diagnosis on the old libraries</b>: 91% of retrieved rubrics judged not applicable, reward 1.00 on 64–75% of verdicts, only 78 of 1000 rubrics ever fired: the rubrics were too specific to the failure they were mined from.</li><li><b>New mining prompt</b> (<code>mining/rubric_prompts.py</code>, taxonomy prompt): each pool failure becomes a general lesson with <i>applies when</i>, <i>failure it prevents</i>, a <i>check from task and diff alone</i>, and an exemption. Curators o3 and GPT-5 (o3 gives the highest applicability, about 70%; Opus 18%, Sonnet 5 7–25%, Haiku 4.5 4–6%).</li><li><b>Validation without SWE-bench</b> (<code>mining/mine_validated.py</code>): 60 disjoint pool probes (30 wrong / 30 right patches from the SWE-gym / SWE-smith collection pool); keep rubrics applicable to at least 20% of probes; dedup at 0.90 → <b>general-v1</b>, 191 rubrics. No curator's rubrics separated wrong from right pool patches, so discrimination is not used for selection.</li><li><b>general-v2</b> (181): v1 minus the two test-process categories ("prove your fix with tests", "add a failing test first"), which produced 29% of all violations on the dev run while flagging at the unresolved base rate: SWE-bench scores the fix, not the agent's tests.</li></ul>
 <h2>2. Development runs on the 100-instance slice (not results)</h2>
 <div class="bar"><span class="lab">general2-where-c</span><span class="track"><span class="fill" style="width:70.0%;background:var(--bar-haiku)"></span></span><span class="val">70</span></div>
-<div class="bar"><span class="lab">interp-c</span><span class="track"><span class="fill" style="width:68.0%;background:var(--bar-floor)"></span></span><span class="val">68</span></div>
+<div class="bar"><span class="lab">interp-c</span><span class="track"><span class="fill" style="width:68.0%;background:var(--ink2)"></span></span><span class="val">68</span></div>
 <div class="bar"><span class="lab">haiku-judge-c</span><span class="track"><span class="fill" style="width:64.0%;background:var(--bar-cwm)"></span></span><span class="val">64</span></div>
 <div class="bar"><span class="lab">general-listen-c</span><span class="track"><span class="fill" style="width:63.0%;background:var(--bar-haiku)"></span></span><span class="val">63</span></div>
 <div class="bar"><span class="lab">general2-c</span><span class="track"><span class="fill" style="width:62.0%;background:var(--bar-cwm)"></span></span><span class="val">62</span></div>
 <div class="bar"><span class="lab">nolib-c</span><span class="track"><span class="fill" style="width:61.0%;background:var(--bar-cwm)"></span></span><span class="val">61</span></div>
 <div class="bar"><span class="lab">general-c</span><span class="track"><span class="fill" style="width:61.0%;background:var(--bar-cwm)"></span></span><span class="val">61</span></div>
+<div class="bar"><span class="lab">noexec-c</span><span class="track"><span class="fill" style="width:60.0%;background:var(--bar-floor)"></span></span><span class="val">60</span></div>
 <div class="bar"><span class="lab">general2-listen-c</span><span class="track"><span class="fill" style="width:59.0%;background:var(--bar-haiku)"></span></span><span class="val">59</span></div>
 <div class="bar"><span class="lab">general2-evid-c</span><span class="track"><span class="fill" style="width:59.0%;background:var(--bar-haiku)"></span></span><span class="val">59</span></div>
 <div class="bar"><span class="lab">haiku-nolib-c</span><span class="track"><span class="fill" style="width:58.0%;background:var(--bar-cwm)"></span></span><span class="val">58</span></div>
 <div class="bar"><span class="lab">scale100-c</span><span class="track"><span class="fill" style="width:56.0%;background:var(--bar-cwm)"></span></span><span class="val">56</span></div>
 <div class="bar"><span class="lab">scale1000-c</span><span class="track"><span class="fill" style="width:55.0%;background:var(--bar-cwm)"></span></span><span class="val">55</span></div>
-<p class="note">grey: interpreter · orange: hybrid CWM with the canonical titles-only verdict · yellow: channel variants (criterion check step, judge evidence rule).</p>
+<p class="note">dark grey: interpreter (ceiling) · light grey: floor (execution commands never run, output withheld, no world model) · orange: hybrid CWM with the canonical titles-only verdict · yellow: channel variants (criterion check step, judge evidence rule, structured location).</p>
 <table class="g"><tr><th>arm</th><th>library</th><th>judge</th><th>verdict channel</th><th class="num">resolved</th></tr>
 <tr class="variant"><td><code>general2-where-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles + structured location (path::symbol)</td><td class="num"><b>70</b></td></tr>
-<tr class="interp"><td><code>interp-c</code><span class="chip">interpreter</span></td><td>—</td><td>—</td><td>—</td><td class="num"><b>68</b></td></tr>
+<tr class="interp"><td><code>interp-c</code><span class="chip">interpreter (ceiling)</span></td><td>—</td><td>—</td><td>—</td><td class="num"><b>68</b></td></tr>
 <tr class="canon"><td><code>haiku-judge-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>mined 1000 (specific)</td><td>Haiku 4.5</td><td>titles</td><td class="num"><b>64</b></td></tr>
 <tr class="variant"><td><code>general-listen-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v1 (191)</td><td>Opus</td><td>titles + criterion&#x27;s check step</td><td class="num"><b>63</b></td></tr>
 <tr class="canon"><td><code>general2-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles</td><td class="num"><b>62</b></td></tr>
 <tr class="canon"><td><code>nolib-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>task criterion only</td><td>Opus</td><td>titles</td><td class="num"><b>61</b></td></tr>
 <tr class="canon"><td><code>general-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>general-v1 (191)</td><td>Opus</td><td>titles</td><td class="num"><b>61</b></td></tr>
+<tr class="floor"><td><code>noexec-c</code><span class="chip">floor: no code execution, no CWM</span></td><td>—</td><td>— (no CWM)</td><td>execution output withheld</td><td class="num"><b>60</b></td></tr>
 <tr class="variant"><td><code>general2-listen-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v2 (181)</td><td>Opus</td><td>titles + criterion&#x27;s check step</td><td class="num"><b>59</b></td></tr>
 <tr class="variant"><td><code>general2-evid-c</code><span class="chip">hybrid CWM, channel variant</span></td><td>general-v2 (181)</td><td>Opus, evidence rule</td><td>titles</td><td class="num"><b>59</b></td></tr>
 <tr class="canon"><td><code>haiku-nolib-c</code><span class="chip">hybrid CWM, canonical channel</span></td><td>task criterion only</td><td>Haiku 4.5</td><td>titles</td><td class="num"><b>58</b></td></tr>
@@ -144,11 +147,13 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <p class="note">Partial-fix, symptom-patching and wrong-location flags are right about 4 times in 5; the test-process categories flag at the base rate and were dropped in v2 on that principle (the metric does not score tests), not by fitting to these numbers.</p>
 <h2>5. The other 400 instances, for configurations chosen in section 2 (not clean)</h2>
 <table class="g"><tr><th>arm</th><th class="num">resolved / 400</th><th class="num">rate</th></tr>
-<tr><td><code>interp-c</code> (interpreter)</td><td class="num">271</td><td class="num">67.8%</td></tr>
+<tr><td><code>interp-c</code> (interpreter, ceiling)</td><td class="num">271</td><td class="num">67.8%</td></tr>
+<tr><td><code>noexec-c</code> (floor: no code execution, no CWM)</td><td class="num">237</td><td class="num">59.2%</td></tr>
 <tr class="variant"><td><code>general2-where-400</code> (general-v2, structured location)</td><td class="num">265</td><td class="num">66.2%</td></tr>
 </table>
 <p><b>Efficiency on the same 400</b> (median wall clock per instance from pod timing records; agent cost from the agent's model stats; judge calls are graded verdicts, Opus fast mode, not priced here).</p><table class="g"><tr><th>arm</th><th class="num">median wall (min)</th><th class="num">agent $ / instance</th><th class="num">agent API calls</th><th class="num">judge calls</th></tr>
 <tr><td><code>interp-c</code></td><td class="num">3.0</td><td class="num">0.32</td><td class="num">68</td><td class="num">0.0</td></tr>
+<tr><td><code>noexec-c</code></td><td class="num">3.9</td><td class="num">0.42</td><td class="num">101</td><td class="num">0.0</td></tr>
 <tr><td><code>nolib-c</code></td><td class="num">4.7</td><td class="num">0.37</td><td class="num">90</td><td class="num">9.4</td></tr>
 <tr><td><code>scale1000-c</code></td><td class="num">5.9</td><td class="num">0.36</td><td class="num">89</td><td class="num">10.4</td></tr>
 <tr><td><code>general2-where-400</code></td><td class="num">5.9</td><td class="num">0.37</td><td class="num">87</td><td class="num">10.0</td></tr>
