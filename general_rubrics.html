@@ -69,9 +69,22 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <p style="margin:0 0 22px"><a href="index.html">&larr; back to the main dashboard</a> &middot; <a href="cost.html">curation cost per rubric</a></p>
 
 <h1>General-lesson rubrics: does making the library applicable change anything?</h1>
+<div class="callout"><b>Development on a SWE-bench slice.</b> Sections 2–5 used 100 SWE-bench Verified instances as a dev slice (category drop v1→v2, channel variants) and then ran the picks on the other 400. The user holds the benchmarks out completely, so these are development artifacts, not results. Section 0 has the clean numbers.</div>
+<h2>0. Results (no SWE-bench in the development loop)</h2>
+<p class="note">The 2026-09-09 canonical sweep, all 500 SWE-bench Verified instances, libraries mined and selected on the collection pool only. Everything below this section used a slice of SWE-bench for development and is kept for transparency, not as results.</p>
+<table class="g"><tr><th>arm</th><th></th><th class="num">resolved / 500</th></tr>
+<tr><td><code>interp-c</code></td><td>interpreter</td><td class="num"><b>339</b></td></tr>
+<tr><td><code>haiku-judge-c</code></td><td>hybrid CWM, Haiku judge, mined 1000</td><td class="num"><b>315</b></td></tr>
+<tr><td><code>nolib-c</code></td><td>hybrid CWM, Opus judge, task criterion only</td><td class="num"><b>309</b></td></tr>
+<tr><td><code>scale100-c</code></td><td>hybrid CWM, Opus judge, mined 100</td><td class="num"><b>303</b></td></tr>
+<tr><td><code>random12-c</code></td><td>hybrid CWM, Opus judge, random 12</td><td class="num"><b>302</b></td></tr>
+<tr><td><code>haiku-nolib-c</code></td><td>hybrid CWM, Haiku judge, task criterion only</td><td class="num"><b>298</b></td></tr>
+<tr><td><code>scale10-c</code></td><td>hybrid CWM, Opus judge, mined 10</td><td class="num"><b>297</b></td></tr>
+<tr><td><code>scale1000-c</code></td><td>hybrid CWM, Opus judge, mined 1000</td><td class="num"><b>285</b></td></tr>
+</table><p class="note">Best without cheating: the interpreter. Best hybrid CWM without cheating: <code>haiku-judge-c</code>, below the interpreter. The general-v1 library with the canonical channel has one untuned run on 100 instances (61, equal to the task-criterion-only arm on the same 100, interpreter 68); its prompt was designed in a lab that scored prompt styles on 30 SWE-bench tasks, so even that run is not fully clean.</p>
 <p class="note">2026-09-10 overnight. Dev slice: 100 fixed SWE-bench Verified instances (<code>data/subset100.json</code>, seed 100); the other 400 instances are held for a clean test. Same Haiku 4.5 agent and never-execute hybrid CWM everywhere; arms differ only in the rubric library, the judge, and what the verdict text contains. Standard error at n=100 is about 5 points.</p>
 <h2>1. What changed in the library</h2><ul><li><b>Diagnosis on the old libraries</b>: 91% of retrieved rubrics judged not applicable, reward 1.00 on 64–75% of verdicts, only 78 of 1000 rubrics ever fired: the rubrics were too specific to the failure they were mined from.</li><li><b>New mining prompt</b> (<code>mining/rubric_prompts.py</code>, taxonomy prompt): each pool failure becomes a general lesson with <i>applies when</i>, <i>failure it prevents</i>, a <i>check from task and diff alone</i>, and an exemption. Curators o3 and GPT-5 (o3 gives the highest applicability, about 70%; Opus 18%, Sonnet 5 7–25%, Haiku 4.5 4–6%).</li><li><b>Validation without SWE-bench</b> (<code>mining/mine_validated.py</code>): 60 disjoint pool probes (30 wrong / 30 right patches from the SWE-gym / SWE-smith collection pool); keep rubrics applicable to at least 20% of probes; dedup at 0.90 → <b>general-v1</b>, 191 rubrics. No curator's rubrics separated wrong from right pool patches, so discrimination is not used for selection.</li><li><b>general-v2</b> (181): v1 minus the two test-process categories ("prove your fix with tests", "add a failing test first"), which produced 29% of all violations on the dev run while flagging at the unresolved base rate: SWE-bench scores the fix, not the agent's tests.</li></ul>
-<h2>2. Resolved on the 100-instance dev slice</h2>
+<h2>2. Development runs on the 100-instance slice (not results)</h2>
 <div class="bar"><span class="lab">general2-where-c</span><span class="track"><span class="fill" style="width:70.0%;background:var(--bar-haiku)"></span></span><span class="val">70</span></div>
 <div class="bar"><span class="lab">interp-c</span><span class="track"><span class="fill" style="width:68.0%;background:var(--bar-floor)"></span></span><span class="val">68</span></div>
 <div class="bar"><span class="lab">haiku-judge-c</span><span class="track"><span class="fill" style="width:64.0%;background:var(--bar-cwm)"></span></span><span class="val">64</span></div>
@@ -129,7 +142,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <tr><td>missed edge cases</td><td class="num">4</td><td class="num">75%</td></tr>
 </table>
 <p class="note">Partial-fix, symptom-patching and wrong-location flags are right about 4 times in 5; the test-process categories flag at the base rate and were dropped in v2 on that principle (the metric does not score tests), not by fitting to these numbers.</p>
-<h2>5. Clean test on the other 400 instances</h2>
+<h2>5. The other 400 instances, for configurations chosen in section 2 (not clean)</h2>
 <table class="g"><tr><th>arm</th><th class="num">resolved / 400</th><th class="num">rate</th></tr>
 <tr><td><code>interp-c</code> (interpreter)</td><td class="num">271</td><td class="num">67.8%</td></tr>
 <tr class="variant"><td><code>general2-where-400</code> (general-v2, structured location)</td><td class="num">265</td><td class="num">66.2%</td></tr>
