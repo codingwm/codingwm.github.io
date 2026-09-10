@@ -142,8 +142,15 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;backgro
 <table class="g"><tr><th>arm</th><th class="num">resolved / 400</th><th class="num">rate</th></tr>
 <tr><td><code>interp-c</code> (interpreter)</td><td class="num">271</td><td class="num">67.8%</td></tr>
 <tr class="exp"><td><code>general2-why-400</code> (general-v2, judge reason (experiment))</td><td class="num">306</td><td class="num">76.5%</td></tr>
-<tr class="variant"><td><code>general2-where-400</code> (general-v2, structured location)</td><td class="num">running</td><td class="num">—</td></tr>
+<tr class="variant"><td><code>general2-where-400</code> (general-v2, structured location)</td><td class="num">265</td><td class="num">66.2%</td></tr>
 </table>
+<p><b>Efficiency on the same 400</b> (median wall clock per instance from pod timing records; agent cost from the agent's model stats; judge calls are graded verdicts, Opus fast mode, not priced here).</p><table class="g"><tr><th>arm</th><th class="num">median wall (min)</th><th class="num">agent $ / instance</th><th class="num">agent API calls</th><th class="num">judge calls</th></tr>
+<tr><td><code>interp-c</code></td><td class="num">3.0</td><td class="num">0.32</td><td class="num">68</td><td class="num">0.0</td></tr>
+<tr><td><code>nolib-c</code></td><td class="num">4.7</td><td class="num">0.37</td><td class="num">90</td><td class="num">9.4</td></tr>
+<tr><td><code>scale1000-c</code></td><td class="num">5.9</td><td class="num">0.36</td><td class="num">89</td><td class="num">10.4</td></tr>
+<tr><td><code>general2-why-400</code></td><td class="num">6.0</td><td class="num">0.40</td><td class="num">91</td><td class="num">10.8</td></tr>
+<tr><td><code>general2-where-400</code></td><td class="num">5.9</td><td class="num">0.37</td><td class="num">87</td><td class="num">10.0</td></tr>
+</table><p class="note">The accuracy gain costs about 2x wall clock (a judge verdict takes 8–15 s versus about 1 s for execution) and about 11 Opus calls per instance: no efficiency win, as with every hybrid arm so far.</p>
 <div class="callout"><b>Caveats on the judge-reason result.</b> (1) The reason is natural language written by the judge, so this arm is outside the strict rubric→reward channel the method was defined with; it is reported as an experiment, not as the canonical hybrid CWM. (2) Opus 5 may know these public repositories, and a sentence can carry that knowledge where a scalar cannot. The controls say the gain needs Opus's judgment, not the library: with a Haiku judge the reason channel does nothing (57, its final verdicts are uninformative), while Opus reasons on the task criterion alone reach 79 and the general-v2 library adds about 6 more (85, about one standard error). (3) It takes more steps: about 185 messages per instance versus 138 for the interpreter.</div>
 <h2>6. Example rubrics from general-v2</h2><p class="note">Full text as the judge sees it. Browse every library on the <a href="rubrics.html">rubric browser</a>.</p>
 <div class="rub">### Always update all required ancillary files (partial fix)
