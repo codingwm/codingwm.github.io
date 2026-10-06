@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-06T21:58:25.190869+00:00",
+  "generated_at": "2026-10-06T22:34:39.702013+00:00",
   "source_links": [
     {
       "label": "Historical sweep and frozen collection pool",
@@ -13,6 +13,14 @@
     {
       "label": "Fixed-policy counts, timings and collection-loss sensitivities",
       "url": "https://github.com/7peng/agent-cwm/blob/main/reports/mle_causal.json"
+    },
+    {
+      "label": "Historical feedback ablations and interpretation warning",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/docs/RESULTS_0922_OVERNIGHT.md#what-does-the-work-rubrics-cwm-predictions-real-checks-2026-10-02-mle-bench-lite-4-runs-each"
+    },
+    {
+      "label": "Pure and hybrid feedback configuration",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/run_mle_arm.py#L255-L295"
     },
     {
       "label": "Clean replication protocol completion",
@@ -79,6 +87,309 @@
     "No proven medal improvement or rubric-specific efficiency gain. Development-set selection, infrastructure losses and dependent repetitions limit interpretation.",
     "Only aggregate numbers and fixed public labels are exported; no prompts, source programs, trajectories, model output or rubric rationales."
   ],
+  "feedback": {
+    "pure": {
+      "label": "Reused original anchor · nominal 1,000",
+      "arms": [
+        "h2-mle-pure-quota",
+        "h2-mle-pure-quota-b",
+        "h2-mle-pure-quota-c",
+        "h2-mle-pure-quota-d"
+      ],
+      "feedback": "Pure CWM",
+      "retrieval": "Category split",
+      "rubrics": 952,
+      "repeats": 4,
+      "complete_repeats": 4,
+      "denominator": 88,
+      "graded": 88,
+      "valid": 47,
+      "medals": 6,
+      "above": 10,
+      "valid_runs": [
+        11,
+        11,
+        13,
+        12
+      ],
+      "mean_valid": 11.75,
+      "valid_rate": 0.5340909090909091,
+      "medal_rate": 0.06818181818181818,
+      "above_rate": 0.11363636363636363
+    },
+    "hybrid": {
+      "label": "Original full library",
+      "arms": [
+        "h2-mle-final-quota",
+        "h2-mle-final-quota-b",
+        "h2-mle-final-quota-c",
+        "h2-mle-final-quota-d"
+      ],
+      "feedback": "Hybrid adaptive checks",
+      "retrieval": "Category split",
+      "rubrics": 952,
+      "repeats": 4,
+      "complete_repeats": 4,
+      "denominator": 88,
+      "graded": 88,
+      "valid": 75,
+      "medals": 4,
+      "above": 8,
+      "valid_runs": [
+        20,
+        16,
+        20,
+        19
+      ],
+      "mean_valid": 18.75,
+      "valid_rate": 0.8522727272727273,
+      "medal_rate": 0.045454545454545456,
+      "above_rate": 0.09090909090909091
+    },
+    "rows": [
+      {
+        "label": "Floor",
+        "arms": [
+          "h2-mle-floor",
+          "h2-mle-floor-b",
+          "h2-mle-floor-c",
+          "h2-mle-floor-d"
+        ],
+        "feedback": "No code feedback",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 39,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          7,
+          15,
+          9,
+          8
+        ],
+        "mean_valid": 9.75,
+        "valid_rate": 0.4431818181818182,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Submit checks only",
+        "arms": [
+          "h2-mle-floor-verify",
+          "h2-mle-floor-verify-b",
+          "h2-mle-floor-verify-c",
+          "h2-mle-floor-verify-d"
+        ],
+        "feedback": "Real checks at submit only",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 48,
+        "medals": 6,
+        "above": 8,
+        "valid_runs": [
+          10,
+          10,
+          15,
+          13
+        ],
+        "mean_valid": 12.0,
+        "valid_rate": 0.5454545454545454,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Checks on every change",
+        "arms": [
+          "h2-mle-hyb-nocwm",
+          "h2-mle-hyb-nocwm-b",
+          "h2-mle-hyb-nocwm-c",
+          "h2-mle-hyb-nocwm-d"
+        ],
+        "feedback": "Real deliverable checks on every code request and submit",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 61,
+        "medals": 7,
+        "above": 12,
+        "valid_runs": [
+          15,
+          14,
+          15,
+          17
+        ],
+        "mean_valid": 15.25,
+        "valid_rate": 0.6931818181818182,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.13636363636363635
+      },
+      {
+        "label": "Pure CWM · no rubrics",
+        "arms": [
+          "h2-mle-pure-norubric",
+          "h2-mle-pure-norubric-b",
+          "h2-mle-pure-norubric-c",
+          "h2-mle-pure-norubric-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Task requirement only",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 33,
+        "medals": 5,
+        "above": 8,
+        "valid_runs": [
+          8,
+          8,
+          7,
+          10
+        ],
+        "mean_valid": 8.25,
+        "valid_rate": 0.375,
+        "medal_rate": 0.056818181818181816,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Reused original anchor · nominal 1,000",
+        "arms": [
+          "h2-mle-pure-quota",
+          "h2-mle-pure-quota-b",
+          "h2-mle-pure-quota-c",
+          "h2-mle-pure-quota-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 47,
+        "medals": 6,
+        "above": 10,
+        "valid_runs": [
+          11,
+          11,
+          13,
+          12
+        ],
+        "mean_valid": 11.75,
+        "valid_rate": 0.5340909090909091,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.11363636363636363
+      },
+      {
+        "label": "Hybrid CWM · no rubrics",
+        "arms": [
+          "h2-mle-hyb-norubric",
+          "h2-mle-hyb-norubric-b",
+          "h2-mle-hyb-norubric-c",
+          "h2-mle-hyb-norubric-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Task requirement only",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 66,
+        "medals": 5,
+        "above": 10,
+        "valid_runs": [
+          15,
+          14,
+          19,
+          18
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.056818181818181816,
+        "above_rate": 0.11363636363636363
+      },
+      {
+        "label": "Original full library",
+        "arms": [
+          "h2-mle-final-quota",
+          "h2-mle-final-quota-b",
+          "h2-mle-final-quota-c",
+          "h2-mle-final-quota-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 75,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          20,
+          16,
+          20,
+          19
+        ],
+        "mean_valid": 18.75,
+        "valid_rate": 0.8522727272727273,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Ceiling",
+        "arms": [
+          "h2-mle-interp",
+          "h2-mle-interp-b",
+          "h2-mle-interp-c",
+          "h2-mle-interp-d"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 66,
+        "medals": 7,
+        "above": 16,
+        "valid_runs": [
+          18,
+          16,
+          16,
+          16
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.18181818181818182
+      }
+    ],
+    "notes": [
+      "Quota describes how the library was curated. Pure/hybrid describes the feedback policy. Both compared arms use the same 952-rubric Quota library and Category-split retrieval.",
+      "Pure mode removes clean-prediction execution, submit verification and real-run memory. Reads, edits, installs, read-only world state and data profiles remain; blind final collection is not shown to the agent.",
+      "Hybrid checks return real program output during the episode and can hold a crashed submission for revision. The CWM also receives the last real-run result.",
+      "[INFERENCE] Wrong predictions can leave runtime bugs uncorrected in pure mode; real checks can expose them while revision is still possible. The saved comparisons do not quantify this mechanism or separate the two checkpoint triggers from real-run memory.",
+      "The validity gap is not an across-the-board quality gap: compare medals and above-median counts too. These small counts do not establish a quality advantage for either feedback policy.",
+      "The historical component sweep is descriptive, not a clean 2×2: submit-only checks, checks on every change and CWM-triggered checks use different policies and realized execution budgets. The separate fixed-policy controls are the more informative rubric comparison.",
+      "The comparisons plotted here do not apportion the gap among false-clean predictions, false alarms, missed rubric coverage and unobserved runtime effects. No such percentages are inferred here."
+    ]
+  },
   "scaling": {
     "hybrid": [
       {
