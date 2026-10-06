@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-06T22:34:39.702013+00:00",
+  "generated_at": "2026-10-06T22:53:35.586432+00:00",
   "source_links": [
     {
       "label": "Historical sweep and frozen collection pool",
@@ -803,22 +803,31 @@
         "tasks": 1
       }
     ],
-    "teacher_collections": [
+    "notes": [
+      "Frozen provenance from collections 2–4, documented in the historical experiment report. This is the shared pool, not a new diversity ablation."
+    ]
+  },
+  "teachers": {
+    "rows": [
       {
-        "label": "Haiku teacher",
+        "label": "Haiku 4.5",
         "attempted": 128,
-        "scored": 127
+        "scored": 127,
+        "score_valid_only": 0.8556847683734095
       },
       {
-        "label": "Sonnet teacher",
+        "label": "Sonnet 5.5",
         "attempted": 128,
-        "scored": 127
+        "scored": 127,
+        "score_valid_only": 0.8946709438175433
       }
     ],
-    "notes": [
-      "Frozen provenance from collections 2–4, documented in the historical experiment report. This is the shared pool, not a new diversity ablation.",
-      "Both later teachers used the same 16 small OpenML tasks. More teacher attempts or a stronger teacher do not broaden task families; diversity and pool size were not independently manipulated."
-    ]
+    "tasks": 16,
+    "score_difference_bounds": [
+      0.030869095948476567,
+      0.04649409594847657
+    ],
+    "protocols_matched": true
   },
   "full": {
     "planned_tasks": 75,
@@ -1455,72 +1464,99 @@
     },
     "curation": [
       {
+        "id": "quality_lessons",
         "label": "Initial quality curation",
         "status": "insufficient_valid_lessons",
         "accepted": 1,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_lessons_v2",
         "label": "Repaired quality curation v2",
         "status": "insufficient_valid_lessons",
         "accepted": 0,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_lessons_v3",
         "label": "Structured quality curation v3",
         "status": "insufficient_valid_lessons",
         "accepted": 4,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_next_teacher-haiku-final-r3",
         "label": "Haiku teacher: final program",
         "status": "insufficient_valid_lessons",
         "accepted": 0,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_next_teacher-sonnet-final-r3",
         "label": "Sonnet teacher: final program",
         "status": "insufficient_valid_lessons",
         "accepted": 1,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_next_existing-haiku-trace-r2",
         "label": "Existing Haiku: full trace",
         "status": "insufficient_valid_lessons",
         "accepted": 1,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_next_teacher-haiku-trace-r4",
         "label": "Haiku teacher: full trace R4",
         "status": "insufficient_valid_lessons",
         "accepted": 1,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "quality_next_teacher-sonnet-trace-r4",
         "label": "Sonnet teacher: full trace R4",
         "status": "insufficient_valid_lessons",
         "accepted": 1,
         "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
       },
       {
+        "id": "single_example",
         "label": "Single-example TRAIN cross-validation",
         "status": "complete_with_unknown",
         "accepted": null,
+        "source_audit_passed": 4,
+        "positive_contrasts": 0,
         "notes": "Source-audit passes: 4; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
       },
       {
+        "id": "multi_example",
         "label": "Multi-example TRAIN cross-validation",
         "status": "complete_with_unknown",
         "accepted": null,
+        "source_audit_passed": 5,
+        "positive_contrasts": 0,
         "notes": "Source-audit passes: 5; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
       },
       {
+        "id": "counterexample_aware",
         "label": "Counterexample-aware TRAIN cross-validation",
         "status": "complete_with_unknown",
         "accepted": null,
+        "source_audit_passed": 2,
+        "positive_contrasts": 0,
         "notes": "Source-audit passes: 2; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
       }
     ],
+    "quality_rubrics": 29,
+    "quality_exposures": 0,
+    "logged_verdicts": 924,
+    "quality_slot_screen": {
+      "estimate": -0.14285714285714285,
+      "ci95": [
+        -0.2857142857142857,
+        0.0
+      ]
+    },
     "notes": [
       "TRAIN-only full-program correction study, not a benchmark run or accepted rubric library. The continuation completed the unstarted slot; the older top-level stopped status is not the final execution status.",
       "Three-arm means use only identical valid repetitions, with equal weight per case. This small selected matched sample is conditional on generation, scope approval and successful execution, not an all-opportunity effect.",
