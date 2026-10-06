@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-06T22:53:35.586432+00:00",
+  "generated_at": "2026-10-06T23:21:20.288709+00:00",
   "source_links": [
     {
       "label": "Historical sweep and frozen collection pool",
@@ -1309,7 +1309,7 @@
           "h2-mle-controlled-quota-c",
           "h2-mle-controlled-quota-d"
         ],
-        "feedback": "Fixed every-second-request checks",
+        "feedback": "Real final.py check on every second code command (180s cap)",
         "retrieval": "Category split",
         "rubrics": 952,
         "repeats": 4,
@@ -1340,7 +1340,7 @@
           "h2-mle-controlled-taskonly-c",
           "h2-mle-controlled-taskonly-d"
         ],
-        "feedback": "Fixed every-second-request checks",
+        "feedback": "Real final.py check on every second code command (180s cap)",
         "retrieval": "Task requirement only",
         "rubrics": null,
         "repeats": 4,
@@ -1371,7 +1371,7 @@
           "h2-mle-controlled-checks-c",
           "h2-mle-controlled-checks-d"
         ],
-        "feedback": "Fixed every-second-request checks",
+        "feedback": "Real final.py check on every second code command (180s cap)",
         "retrieval": "No CWM",
         "rubrics": null,
         "repeats": 4,
@@ -1416,7 +1416,7 @@
       "status": "stopped_by_user"
     },
     "notes": [
-      "These fixed-policy arms are not the legacy adaptive hybrid: every second code request gets a real check capped at 180 seconds; only a real successful submit check accepts submission.",
+      "These fixed-policy arms are not the legacy adaptive hybrid, whose real checks fire when the CWM predicts a clean run. Here the trigger is a command count: every second code-running command runs final.py for real, stopped after at most 180 seconds; it is not a timer. At submit final.py runs again; only a real crash holds the submission (at most twice), reaching the cap does not, and the CWM has no veto.",
       "Quota versus task-only CWM isolates rubric contribution under this policy; quota versus checks-only combines CWM and rubrics. Neither is a clean causal estimate of the legacy adaptive-check result.",
       "Conservative validity sensitivities count comparator collection losses as successful. The reported intervals use paired competition-cluster bootstrap; Lite remains a development set.",
       "Repeated final-collection losses (quota / task-only / checks): 0 / 6 / 5.",
