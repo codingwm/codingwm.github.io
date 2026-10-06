@@ -1,0 +1,1232 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-06T21:58:25.190869+00:00",
+  "source_links": [
+    {
+      "label": "Historical sweep and frozen collection pool",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/docs/RESULTS_0922_OVERNIGHT.md#four-runs-of-every-row-the-size-sweep-and-a-doubled-budget-2026-09-30--10-01-mle-bench-lite"
+    },
+    {
+      "label": "Audit context and quality-study interpretation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/README.md"
+    },
+    {
+      "label": "Fixed-policy counts, timings and collection-loss sensitivities",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/mle_causal.json"
+    },
+    {
+      "label": "Clean replication protocol completion",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/mle_clean_controls_status.json"
+    },
+    {
+      "label": "Teacher collection comparison",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_teacher_comparison.json"
+    },
+    {
+      "label": "Quality rubric exposure",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/mle_quality_coverage.json"
+    },
+    {
+      "label": "Reserved-quality-slot screen",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_pool_probe.json"
+    },
+    {
+      "label": "Full-program quality execution and matched sample",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_full_program_v1.json"
+    },
+    {
+      "label": "Counterexample study public aggregates",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_counterexample_v1_public.json"
+    },
+    {
+      "label": "Initial quality curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_lessons_curation.json"
+    },
+    {
+      "label": "Repaired quality curation v2",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_lessons_v2_curation.json"
+    },
+    {
+      "label": "Structured quality curation v3",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_lessons_v3_curation.json"
+    },
+    {
+      "label": "Haiku final-program curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_teacher-haiku-final-r3_curation.json"
+    },
+    {
+      "label": "Sonnet final-program curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_teacher-sonnet-final-r3_curation.json"
+    },
+    {
+      "label": "Existing Haiku trace curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_existing-haiku-trace-r2_curation.json"
+    },
+    {
+      "label": "Haiku trace R4 curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_teacher-haiku-trace-r4_curation.json"
+    },
+    {
+      "label": "Sonnet trace R4 curation",
+      "url": "https://github.com/7peng/agent-cwm/blob/main/reports/quality_next_teacher-sonnet-trace-r4_curation.json"
+    }
+  ],
+  "caveats": [
+    "Static snapshot of saved experiments, not live monitoring. Historical benchmark sweeps are finished; later clean replication is partial and the completed quality study retains unknowns.",
+    "Lite has 22 planned competitions per repeat, including the known English text-normalization grader failure. Saved grader errors count as completed unsuccessful outcomes; absent/unreadable grades do not.",
+    "Counts show observed outcomes against declared denominators. Rates and mean/plot points are withheld unless every planned repeat is fully graded; missing evidence is not zero performance.",
+    "The full-benchmark tables use common graded cohorts, not a claim of completing all 75 planned tasks. Their per-run counts use the displayed cohort denominator rather than 22.",
+    "No proven medal improvement or rubric-specific efficiency gain. Development-set selection, infrastructure losses and dependent repetitions limit interpretation.",
+    "Only aggregate numbers and fixed public labels are exported; no prompts, source programs, trajectories, model output or rubric rationales."
+  ],
+  "scaling": {
+    "hybrid": [
+      {
+        "label": "Nested subset · nominal 10",
+        "arms": [
+          "h2-mle-final-quota-n10",
+          "h2-mle-final-quota-n10-b",
+          "h2-mle-final-quota-n10-c"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 10,
+        "repeats": 3,
+        "complete_repeats": 3,
+        "denominator": 66,
+        "graded": 66,
+        "valid": 54,
+        "medals": 5,
+        "above": 9,
+        "valid_runs": [
+          19,
+          16,
+          19
+        ],
+        "mean_valid": 18.0,
+        "valid_rate": 0.8181818181818182,
+        "medal_rate": 0.07575757575757576,
+        "above_rate": 0.13636363636363635
+      },
+      {
+        "label": "Nested subset · nominal 100",
+        "arms": [
+          "h2-mle-final-quota-n100",
+          "h2-mle-final-quota-n100-b",
+          "h2-mle-final-quota-n100-c"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 100,
+        "repeats": 3,
+        "complete_repeats": 3,
+        "denominator": 66,
+        "graded": 66,
+        "valid": 46,
+        "medals": 5,
+        "above": 9,
+        "valid_runs": [
+          16,
+          14,
+          16
+        ],
+        "mean_valid": 15.333333333333334,
+        "valid_rate": 0.696969696969697,
+        "medal_rate": 0.07575757575757576,
+        "above_rate": 0.13636363636363635
+      },
+      {
+        "label": "Nested subset · nominal 500",
+        "arms": [
+          "h2-mle-final-quota-n500",
+          "h2-mle-final-quota-n500-b",
+          "h2-mle-final-quota-n500-c"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 500,
+        "repeats": 3,
+        "complete_repeats": 3,
+        "denominator": 66,
+        "graded": 66,
+        "valid": 53,
+        "medals": 5,
+        "above": 8,
+        "valid_runs": [
+          16,
+          19,
+          18
+        ],
+        "mean_valid": 17.666666666666668,
+        "valid_rate": 0.803030303030303,
+        "medal_rate": 0.07575757575757576,
+        "above_rate": 0.12121212121212122
+      },
+      {
+        "label": "Original full library",
+        "arms": [
+          "h2-mle-final-quota",
+          "h2-mle-final-quota-b",
+          "h2-mle-final-quota-c",
+          "h2-mle-final-quota-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 75,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          20,
+          16,
+          20,
+          19
+        ],
+        "mean_valid": 18.75,
+        "valid_rate": 0.8522727272727273,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      }
+    ],
+    "pure": [
+      {
+        "label": "Fresh curation · nominal 10",
+        "arms": [
+          "h2-mle-pure-scratch10",
+          "h2-mle-pure-scratch10-b",
+          "h2-mle-pure-scratch10-c",
+          "h2-mle-pure-scratch10-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 8,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 31,
+        "medals": 2,
+        "above": 7,
+        "valid_runs": [
+          6,
+          8,
+          7,
+          10
+        ],
+        "mean_valid": 7.75,
+        "valid_rate": 0.3522727272727273,
+        "medal_rate": 0.022727272727272728,
+        "above_rate": 0.07954545454545454
+      },
+      {
+        "label": "Fresh curation · nominal 100",
+        "arms": [
+          "h2-mle-pure-scratch100",
+          "h2-mle-pure-scratch100-b",
+          "h2-mle-pure-scratch100-c",
+          "h2-mle-pure-scratch100-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 99,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 49,
+        "medals": 7,
+        "above": 11,
+        "valid_runs": [
+          12,
+          12,
+          12,
+          13
+        ],
+        "mean_valid": 12.25,
+        "valid_rate": 0.5568181818181818,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.125
+      },
+      {
+        "label": "Fresh curation · nominal 500",
+        "arms": [
+          "h2-mle-pure-scratch500",
+          "h2-mle-pure-scratch500-b",
+          "h2-mle-pure-scratch500-c",
+          "h2-mle-pure-scratch500-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 500,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 33,
+        "medals": 6,
+        "above": 7,
+        "valid_runs": [
+          6,
+          8,
+          11,
+          8
+        ],
+        "mean_valid": 8.25,
+        "valid_rate": 0.375,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.07954545454545454
+      },
+      {
+        "label": "Reused original anchor · nominal 1,000",
+        "arms": [
+          "h2-mle-pure-quota",
+          "h2-mle-pure-quota-b",
+          "h2-mle-pure-quota-c",
+          "h2-mle-pure-quota-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 47,
+        "medals": 6,
+        "above": 10,
+        "valid_runs": [
+          11,
+          11,
+          13,
+          12
+        ],
+        "mean_valid": 11.75,
+        "valid_rate": 0.5340909090909091,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.11363636363636363
+      },
+      {
+        "label": "Fresh curation · nominal 2,000",
+        "arms": [
+          "h2-mle-pure-scratch2000",
+          "h2-mle-pure-scratch2000-b",
+          "h2-mle-pure-scratch2000-c",
+          "h2-mle-pure-scratch2000-d"
+        ],
+        "feedback": "Pure CWM",
+        "retrieval": "Category split",
+        "rubrics": 1802,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 48,
+        "medals": 6,
+        "above": 9,
+        "valid_runs": [
+          11,
+          11,
+          12,
+          14
+        ],
+        "mean_valid": 12.0,
+        "valid_rate": 0.5454545454545454,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.10227272727272728
+      }
+    ],
+    "notes": [
+      "Hybrid sizes are nested subsets of one existing quota library, preserving its category mix: three repeats for subsets and four for the original library. This is not a fresh-curation size sweep.",
+      "Pure sizes use one freshly mined library per nominal size from the same frozen pool; actual file sizes are shown. The nominal 1,000 anchor reuses the original library, not a newly mined size.",
+      "Pure CWM supplies no real code feedback during the episode; blind final collection still runs for grading. Legacy hybrid runs code when the CWM prediction is clean and again before accepting submission (180-second checks); the two designs must not be pooled.",
+      "The observed size response is noisy/non-monotonic; no optimum or general claim that size never matters follows. A fresh hybrid scaling experiment and fourth hybrid-subset repeats were not run."
+    ]
+  },
+  "budgets": {
+    "rows": [
+      {
+        "label": "Ceiling · 2 h / 250 steps allowed",
+        "arms": [
+          "h2-mle-interp",
+          "h2-mle-interp-b",
+          "h2-mle-interp-c",
+          "h2-mle-interp-d"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 66,
+        "medals": 7,
+        "above": 16,
+        "valid_runs": [
+          18,
+          16,
+          16,
+          16
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.18181818181818182
+      },
+      {
+        "label": "Ceiling · 4 h / 500 steps allowed",
+        "arms": [
+          "h2-mle-interp-long",
+          "h2-mle-interp-long-b"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 2,
+        "complete_repeats": 2,
+        "denominator": 44,
+        "graded": 44,
+        "valid": 33,
+        "medals": 3,
+        "above": 7,
+        "valid_runs": [
+          17,
+          16
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.1590909090909091
+      },
+      {
+        "label": "Quota hybrid · 2 h / 250 steps allowed",
+        "arms": [
+          "h2-mle-final-quota",
+          "h2-mle-final-quota-b",
+          "h2-mle-final-quota-c",
+          "h2-mle-final-quota-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 75,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          20,
+          16,
+          20,
+          19
+        ],
+        "mean_valid": 18.75,
+        "valid_rate": 0.8522727272727273,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Quota hybrid · 4 h / 500 steps allowed",
+        "arms": [
+          "h2-mle-final-quota-long",
+          "h2-mle-final-quota-long-b"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 2,
+        "complete_repeats": 2,
+        "denominator": 44,
+        "graded": 44,
+        "valid": 36,
+        "medals": 2,
+        "above": 5,
+        "valid_runs": [
+          17,
+          19
+        ],
+        "mean_valid": 18.0,
+        "valid_rate": 0.8181818181818182,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.11363636363636363
+      }
+    ],
+    "notes": [
+      "Normal and doubled budgets are allowed ceilings (2 h / 250 steps versus 4 h / 500 steps), not actual elapsed time. The larger-budget arms have two repeats, versus four normal-budget repeats.",
+      "Per-command ceilings remain 600 seconds for real execution and 180 seconds for hybrid checks; this does not test longer uninterrupted model training.",
+      "These results do not establish a medal benefit from increasing the agent budget, nor rule out benefits from longer training or another execution budget."
+    ]
+  },
+  "pool": {
+    "tasks": 316,
+    "rollouts": 2795,
+    "sources": [
+      {
+        "name": "InfiAgent-DABench",
+        "tasks": 217
+      },
+      {
+        "name": "DA-Code",
+        "tasks": 53
+      },
+      {
+        "name": "DSBench",
+        "tasks": 21
+      },
+      {
+        "name": "MLGym",
+        "tasks": 13
+      },
+      {
+        "name": "MLAgentBench",
+        "tasks": 11
+      },
+      {
+        "name": "RE-Bench",
+        "tasks": 1
+      }
+    ],
+    "teacher_collections": [
+      {
+        "label": "Haiku teacher",
+        "attempted": 128,
+        "scored": 127
+      },
+      {
+        "label": "Sonnet teacher",
+        "attempted": 128,
+        "scored": 127
+      }
+    ],
+    "notes": [
+      "Frozen provenance from collections 2–4, documented in the historical experiment report. This is the shared pool, not a new diversity ablation.",
+      "Both later teachers used the same 16 small OpenML tasks. More teacher attempts or a stronger teacher do not broaden task families; diversity and pool size were not independently manipulated."
+    ]
+  },
+  "full": {
+    "planned_tasks": 75,
+    "common_tasks": 69,
+    "outside_lite_tasks": 47,
+    "common": [
+      {
+        "label": "Ceiling",
+        "arms": [
+          "full-mle-interp"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 69,
+        "graded": 69,
+        "valid": 52,
+        "medals": 2,
+        "above": 7,
+        "valid_runs": [
+          52
+        ],
+        "mean_valid": 52.0,
+        "valid_rate": 0.7536231884057971,
+        "medal_rate": 0.028985507246376812,
+        "above_rate": 0.10144927536231885
+      },
+      {
+        "label": "Floor",
+        "arms": [
+          "full-mle-floor"
+        ],
+        "feedback": "No code feedback",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 69,
+        "graded": 69,
+        "valid": 34,
+        "medals": 1,
+        "above": 3,
+        "valid_runs": [
+          34
+        ],
+        "mean_valid": 34.0,
+        "valid_rate": 0.4927536231884058,
+        "medal_rate": 0.014492753623188406,
+        "above_rate": 0.043478260869565216
+      },
+      {
+        "label": "Quota hybrid",
+        "arms": [
+          "full-mle-quota-n952"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 69,
+        "graded": 69,
+        "valid": 58,
+        "medals": 2,
+        "above": 4,
+        "valid_runs": [
+          58
+        ],
+        "mean_valid": 58.0,
+        "valid_rate": 0.8405797101449275,
+        "medal_rate": 0.028985507246376812,
+        "above_rate": 0.057971014492753624
+      }
+    ],
+    "outside_lite": [
+      {
+        "label": "Ceiling",
+        "arms": [
+          "full-mle-interp"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 47,
+        "graded": 47,
+        "valid": 34,
+        "medals": 2,
+        "above": 4,
+        "valid_runs": [
+          34
+        ],
+        "mean_valid": 34.0,
+        "valid_rate": 0.723404255319149,
+        "medal_rate": 0.0425531914893617,
+        "above_rate": 0.0851063829787234
+      },
+      {
+        "label": "Floor",
+        "arms": [
+          "full-mle-floor"
+        ],
+        "feedback": "No code feedback",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 47,
+        "graded": 47,
+        "valid": 25,
+        "medals": 0,
+        "above": 2,
+        "valid_runs": [
+          25
+        ],
+        "mean_valid": 25.0,
+        "valid_rate": 0.5319148936170213,
+        "medal_rate": 0.0,
+        "above_rate": 0.0425531914893617
+      },
+      {
+        "label": "Quota hybrid",
+        "arms": [
+          "full-mle-quota-n952"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 1,
+        "complete_repeats": 1,
+        "denominator": 47,
+        "graded": 47,
+        "valid": 40,
+        "medals": 1,
+        "above": 2,
+        "valid_runs": [
+          40
+        ],
+        "mean_valid": 40.0,
+        "valid_rate": 0.851063829787234,
+        "medal_rate": 0.02127659574468085,
+        "above_rate": 0.0425531914893617
+      }
+    ],
+    "raw_coverage": [
+      {
+        "label": "Ceiling",
+        "graded": 69,
+        "planned": 75
+      },
+      {
+        "label": "Floor",
+        "graded": 72,
+        "planned": 75
+      },
+      {
+        "label": "Quota hybrid",
+        "graded": 71,
+        "planned": 75
+      }
+    ],
+    "notes": [
+      "One repeat per arm. All metrics are recomputed on the intersection of saved grades; raw arm coverage is shown separately. The outside-Lite cohort excludes the canonical Lite development tasks.",
+      "Historical common-cohort exclusions: tgs-salt, tensorflow2-question-answering and vinbigdata had pandas grader incompatibilities; freesound, inaturalist and iwildcam had persistent Ceiling pod losses.",
+      "Floor and Quota had valid submissions on two Ceiling-loss tasks, so common filtering favors Ceiling. This is not an unbiased complete 75-task estimate.",
+      "Outside-Lite tasks had not been inspected before this historical run. Lite is development evidence. The original quota library was chosen for its best observed nested-sweep mean, not as a proven fresh-curation optimum."
+    ]
+  },
+  "matching": {
+    "rows": [
+      {
+        "label": "Ceiling",
+        "arms": [
+          "h2-mle-interp",
+          "h2-mle-interp-b",
+          "h2-mle-interp-c",
+          "h2-mle-interp-d"
+        ],
+        "feedback": "Real execution",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 66,
+        "medals": 7,
+        "above": 16,
+        "valid_runs": [
+          18,
+          16,
+          16,
+          16
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.18181818181818182
+      },
+      {
+        "label": "Floor",
+        "arms": [
+          "h2-mle-floor",
+          "h2-mle-floor-b",
+          "h2-mle-floor-c",
+          "h2-mle-floor-d"
+        ],
+        "feedback": "No code feedback",
+        "retrieval": "",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 39,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          7,
+          15,
+          9,
+          8
+        ],
+        "mean_valid": 9.75,
+        "valid_rate": 0.4431818181818182,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Wrong-answer",
+        "arms": [
+          "h2-mle-final-wrong1000",
+          "h2-mle-final-wrong1000-b",
+          "h2-mle-final-wrong1000-c",
+          "h2-mle-final-wrong1000-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 1000,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 51,
+        "medals": 7,
+        "above": 11,
+        "valid_runs": [
+          14,
+          13,
+          13,
+          11
+        ],
+        "mean_valid": 12.75,
+        "valid_rate": 0.5795454545454546,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.125
+      },
+      {
+        "label": "Unmatched",
+        "arms": [
+          "h2-mle-cwm-opus-v4-whole",
+          "h2-mle-cwm-opus-v4-whole-b",
+          "h2-mle-cwm-opus-v4-whole-c",
+          "h2-mle-cwm-opus-v4-whole-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 4294,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 50,
+        "medals": 7,
+        "above": 8,
+        "valid_runs": [
+          11,
+          13,
+          13,
+          13
+        ],
+        "mean_valid": 12.5,
+        "valid_rate": 0.5681818181818182,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.09090909090909091
+      },
+      {
+        "label": "Filtered",
+        "arms": [
+          "h2-mle-final-filtered",
+          "h2-mle-final-filtered-b",
+          "h2-mle-final-filtered-c",
+          "h2-mle-final-filtered-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 220,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 59,
+        "medals": 4,
+        "above": 9,
+        "valid_runs": [
+          12,
+          16,
+          15,
+          16
+        ],
+        "mean_valid": 14.75,
+        "valid_rate": 0.6704545454545454,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.10227272727272728
+      },
+      {
+        "label": "Quota",
+        "arms": [
+          "h2-mle-final-quota-plain",
+          "h2-mle-final-quota-plain-b",
+          "h2-mle-final-quota-plain-c",
+          "h2-mle-final-quota-plain-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 64,
+        "medals": 6,
+        "above": 10,
+        "valid_runs": [
+          15,
+          16,
+          15,
+          18
+        ],
+        "mean_valid": 16.0,
+        "valid_rate": 0.7272727272727273,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.11363636363636363
+      },
+      {
+        "label": "Oracle, pool-matched (reference)",
+        "arms": [
+          "h2-mle-cwm-opus-v4-op3",
+          "h2-mle-cwm-opus-v4-op3-b",
+          "h2-mle-cwm-opus-v4-op3-c",
+          "h2-mle-cwm-opus-v4-op3-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 187,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 73,
+        "medals": 7,
+        "above": 10,
+        "valid_runs": [
+          20,
+          17,
+          19,
+          17
+        ],
+        "mean_valid": 18.25,
+        "valid_rate": 0.8295454545454546,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.11363636363636363
+      },
+      {
+        "label": "Oracle, MLE-bench-matched (reference)",
+        "arms": [
+          "h2-mle-cwm-opus-v4-or3",
+          "h2-mle-cwm-opus-v4-or3-b",
+          "h2-mle-cwm-opus-v4-or3-c",
+          "h2-mle-cwm-opus-v4-or3-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Similarity",
+        "rubrics": 186,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 60,
+        "medals": 4,
+        "above": 6,
+        "valid_runs": [
+          14,
+          17,
+          12,
+          17
+        ],
+        "mean_valid": 15.0,
+        "valid_rate": 0.6818181818181818,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.06818181818181818
+      },
+      {
+        "label": "Filtered",
+        "arms": [
+          "h2-mle-final-filtered-split",
+          "h2-mle-final-filtered-split-b",
+          "h2-mle-final-filtered-split-c",
+          "h2-mle-final-filtered-split-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 220,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 66,
+        "medals": 6,
+        "above": 11,
+        "valid_runs": [
+          18,
+          18,
+          16,
+          14
+        ],
+        "mean_valid": 16.5,
+        "valid_rate": 0.75,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.125
+      },
+      {
+        "label": "Quota",
+        "arms": [
+          "h2-mle-final-quota",
+          "h2-mle-final-quota-b",
+          "h2-mle-final-quota-c",
+          "h2-mle-final-quota-d"
+        ],
+        "feedback": "Hybrid adaptive checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 75,
+        "medals": 4,
+        "above": 8,
+        "valid_runs": [
+          20,
+          16,
+          20,
+          19
+        ],
+        "mean_valid": 18.75,
+        "valid_rate": 0.8522727272727273,
+        "medal_rate": 0.045454545454545456,
+        "above_rate": 0.09090909090909091
+      }
+    ],
+    "notes": [
+      "All ten historical rows have four planned repeats. Library sizes are read from the exact historical library files, including the restored older oracle versions.",
+      "Oracle means a reference library matched to a known failure mix, not perfect advice; the MLE-matched reference looks at benchmark failures and is not a deployable held-out method.",
+      "Shelf matching is not served matching: similarity retrieval can change the exposure mix. Filtered/Quota crossed with Similarity/Category split separates some choices, but does not isolate every source of change.",
+      "Quota validity is not a demonstrated medal/above-median improvement. Adaptive checks remain part of every historical rubric row; fixed-policy controls are a separate experiment."
+    ]
+  },
+  "controls": {
+    "rows": [
+      {
+        "label": "Quota + CWM + fixed checks",
+        "arms": [
+          "h2-mle-controlled-quota",
+          "h2-mle-controlled-quota-b",
+          "h2-mle-controlled-quota-c",
+          "h2-mle-controlled-quota-d"
+        ],
+        "feedback": "Fixed every-second-request checks",
+        "retrieval": "Category split",
+        "rubrics": 952,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 69,
+        "medals": 7,
+        "above": 12,
+        "valid_runs": [
+          18,
+          19,
+          17,
+          15
+        ],
+        "mean_valid": 17.25,
+        "valid_rate": 0.7840909090909091,
+        "medal_rate": 0.07954545454545454,
+        "above_rate": 0.13636363636363635,
+        "real_run_seconds": 463.4279772727273,
+        "end_to_end_seconds": 1297.7621908187866
+      },
+      {
+        "label": "Task-only CWM + fixed checks",
+        "arms": [
+          "h2-mle-controlled-taskonly",
+          "h2-mle-controlled-taskonly-b",
+          "h2-mle-controlled-taskonly-c",
+          "h2-mle-controlled-taskonly-d"
+        ],
+        "feedback": "Fixed every-second-request checks",
+        "retrieval": "Task requirement only",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 57,
+        "medals": 6,
+        "above": 12,
+        "valid_runs": [
+          14,
+          15,
+          14,
+          14
+        ],
+        "mean_valid": 14.25,
+        "valid_rate": 0.6477272727272727,
+        "medal_rate": 0.06818181818181818,
+        "above_rate": 0.13636363636363635,
+        "real_run_seconds": 517.3569545454545,
+        "end_to_end_seconds": 1427.8210287988186
+      },
+      {
+        "label": "Fixed checks only",
+        "arms": [
+          "h2-mle-controlled-checks",
+          "h2-mle-controlled-checks-b",
+          "h2-mle-controlled-checks-c",
+          "h2-mle-controlled-checks-d"
+        ],
+        "feedback": "Fixed every-second-request checks",
+        "retrieval": "No CWM",
+        "rubrics": null,
+        "repeats": 4,
+        "complete_repeats": 4,
+        "denominator": 88,
+        "graded": 88,
+        "valid": 49,
+        "medals": 2,
+        "above": 10,
+        "valid_runs": [
+          10,
+          13,
+          13,
+          13
+        ],
+        "mean_valid": 12.25,
+        "valid_rate": 0.5568181818181818,
+        "medal_rate": 0.022727272727272728,
+        "above_rate": 0.11363636363636363,
+        "real_run_seconds": 654.6992386363636,
+        "end_to_end_seconds": 1557.7429837909613
+      }
+    ],
+    "rubric_validity_sensitivity": {
+      "estimate": 0.06818181818181812,
+      "ci95": [
+        -0.03409090909090906,
+        0.19318181818181812
+      ]
+    },
+    "combined_validity_sensitivity": {
+      "estimate": 0.17045454545454541,
+      "ci95": [
+        0.045170454545454604,
+        0.3068181818181819
+      ]
+    },
+    "clean_replication": {
+      "complete": 125,
+      "attempted": 132,
+      "planned": 264,
+      "status": "stopped_by_user"
+    },
+    "notes": [
+      "These fixed-policy arms are not the legacy adaptive hybrid: every second code request gets a real check capped at 180 seconds; only a real successful submit check accepts submission.",
+      "Quota versus task-only CWM isolates rubric contribution under this policy; quota versus checks-only combines CWM and rubrics. Neither is a clean causal estimate of the legacy adaptive-check result.",
+      "Conservative validity sensitivities count comparator collection losses as successful. The reported intervals use paired competition-cluster bootstrap; Lite remains a development set.",
+      "Repeated final-collection losses (quota / task-only / checks): 0 / 6 / 5.",
+      "Recorded mean execution and end-to-end seconds describe these saved attempts, not API cost or proven rubric-specific efficiency. Historical retries/overwritten attempts make timing comparisons descriptive.",
+      "Clean replication completion comes from the protocol status report, not cached causal grade counts. It stopped by user request with unresolved attempts and cancelled queued repeats; it is not four completed repeats."
+    ]
+  },
+  "quality": {
+    "status": "complete_with_unknown",
+    "accepted_library": false,
+    "paired_tasks": 5,
+    "paired_cases": 5,
+    "paired_repeats": 15,
+    "means": [
+      {
+        "label": "Unchanged original",
+        "balanced_accuracy": 0.7716222447142,
+        "seconds": 6.478298886933338
+      },
+      {
+        "label": "No lesson",
+        "balanced_accuracy": 0.7381720846232,
+        "seconds": 6.733302429266661
+      },
+      {
+        "label": "Lesson-guided",
+        "balanced_accuracy": 0.7787890800721999,
+        "seconds": 10.302434584533327
+      }
+    ],
+    "guided_delta": 0.00716683535799989,
+    "ci95": [
+      -0.005594804317999991,
+      0.01983367071560005
+    ],
+    "execution": {
+      "planned": 171,
+      "admitted": 120,
+      "attempted": 120,
+      "valid": 115,
+      "invalid": 1,
+      "unknown": 4,
+      "unstarted": 0,
+      "rejected": 51
+    },
+    "curation": [
+      {
+        "label": "Initial quality curation",
+        "status": "insufficient_valid_lessons",
+        "accepted": 1,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Repaired quality curation v2",
+        "status": "insufficient_valid_lessons",
+        "accepted": 0,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Structured quality curation v3",
+        "status": "insufficient_valid_lessons",
+        "accepted": 4,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Haiku teacher: final program",
+        "status": "insufficient_valid_lessons",
+        "accepted": 0,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Sonnet teacher: final program",
+        "status": "insufficient_valid_lessons",
+        "accepted": 1,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Existing Haiku: full trace",
+        "status": "insufficient_valid_lessons",
+        "accepted": 1,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Haiku teacher: full trace R4",
+        "status": "insufficient_valid_lessons",
+        "accepted": 1,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Sonnet teacher: full trace R4",
+        "status": "insufficient_valid_lessons",
+        "accepted": 1,
+        "notes": "Accepted individual lessons are not an accepted deployable library; minimum library gate: 12 lessons."
+      },
+      {
+        "label": "Single-example TRAIN cross-validation",
+        "status": "complete_with_unknown",
+        "accepted": null,
+        "notes": "Source-audit passes: 4; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
+      },
+      {
+        "label": "Multi-example TRAIN cross-validation",
+        "status": "complete_with_unknown",
+        "accepted": null,
+        "notes": "Source-audit passes: 5; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
+      },
+      {
+        "label": "Counterexample-aware TRAIN cross-validation",
+        "status": "complete_with_unknown",
+        "accepted": null,
+        "notes": "Source-audit passes: 2; positive held-task contrasts: 0. Native library gates were not evaluated; source passes are not deployable lessons."
+      }
+    ],
+    "notes": [
+      "TRAIN-only full-program correction study, not a benchmark run or accepted rubric library. The continuation completed the unstarted slot; the older top-level stopped status is not the final execution status.",
+      "Three-arm means use only identical valid repetitions, with equal weight per case. This small selected matched sample is conditional on generation, scope approval and successful execution, not an all-opportunity effect.",
+      "The descriptive 95% interval resamples tasks (5,000 paired cluster draws; seed 20261003), preserving all matched cases/repetitions per task. A zero-crossing interval does not demonstrate a quality gain.",
+      "Rejected programs are not execution failures. Unknown means an attempted admitted slot with no known valid/invalid outcome; it is retained, not imputed as a failure. Invalid includes the recorded timeout; unstarted counts admitted slots only.",
+      "Program execution seconds are not agent throughput or end-to-end efficiency. The small quality point estimate does not demonstrate a medal gain.",
+      "Legacy quota quality category: 29 rubrics; 0 retrieved exposures across 924 logged control verdicts. Library presence is not served feedback.",
+      "Reserved-quality-slot screen versus category split: ordering difference -0.143, 95% CI [-0.286, 0.000]. It did not establish the required positive gain; incomplete pairs remain missing.",
+      "Counterexample study: 256 responses; 0 API failures. Unusable/unknown generation and held-task decisions remain unknown. Do not rank prompt variants from this poor coverage.",
+      "Stronger teachers, full traces and multiple examples did not establish a deployable quality library or downstream medal benefit. Individual accepted lessons and source-audit passes have different gates."
+    ]
+  },
+  "unfinished": [
+    "Fresh-curation hybrid size scaling and independently replicated libraries at each size; the historical nested-subset study is not that experiment.",
+    "An isolated pool-diversity/size experiment across additional task families, not just the same small OpenML tasks with different teachers.",
+    "An unbiased complete full-benchmark comparison and fresh held-out confirmation after development-set selection.",
+    "Completion of the cancelled clean-control protocol: the saved partial replication is not a full four-repeat result.",
+    "A quality library that clears all native gates, reaches the agent through retrieval, and improves held-out downstream quality/medals without an efficiency trade-off."
+  ]
+}
